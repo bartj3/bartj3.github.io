@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://bartj3.github.com/atom.xml" rel="self"/>
   <link href="http://bartj3.github.com/"/>
-  <updated>2013-10-15T13:17:08+02:00</updated>
+  <updated>2013-10-15T13:20:47+02:00</updated>
   <id>http://bartj3.github.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,43 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Yet another shot]]></title>
+    <link href="http://bartj3.github.com/blog/2013/10/15/yet-another-shot/"/>
+    <updated>2013-10-15T08:07:00+02:00</updated>
+    <id>http://bartj3.github.com/blog/2013/10/15/yet-another-shot</id>
+    <content type="html"><![CDATA[<p>Over the years I tried blogging a couple of times. However for some reason I
+never seemed able to get some rhythm in it, to keep blogging. The last article
+on this blog is well over a year old. And the day I wrote it I was sure it was
+the first of many more to come. The post got some traction on
+<a href="https://news.ycombinator.com">Hacker News</a> and I got some great feedback.
+However the article was a rant, and rants always seem to get traction, and are
+the easiest to write.</p>
+
+<p>Last couple of months I&rsquo;ve had the honor to be invited to speak at a couple of
+usergroups and conferences, and I got some great feedback. People were
+enthoustiastic about what I had to tell them, a surprise to me because I thought
+my skills to be pretty mediocre. Turns out that I might be comparing myself with
+the wrong people. There&rsquo;ll always be some guy better at Vim, or some guy better
+at Ruby, and sadly for me plenty of guys better at skateboarding and
+snowboarding&hellip; but (this sounds obvious but wasn&rsquo;t to me) as it turns out
+there&rsquo;s a lot of people that have different focusses when learning new things.
+People I can definately teach some new tricks.</p>
+
+<p>Inspired by <a href="http://blog.jenniferdewalt.com/post/62998082815/after-180-websites-im-ready-to-start-the-rest-of-my">Jennifer Dewalt</a>
+who created 180 websites in 180 days, and <a href="http://swizec.com/blog/inspired-by-the-180-websites-i-will-understand-52-academic-papers-in-52-weeks/swizec/6365">Swizec Teller</a>
+whose plan it is to understand 52 academic papers in 52 weeks I&rsquo;ve set my own
+goal: I&rsquo;m not going to do anything daily, that&rsquo;ll drive me crazy but I will try
+to blog as often as possible with an absolute minimum of 2 blogs a week. They
+don&rsquo;t have to be pagelong stories, they could be glorified tweets, but as a
+fulltime developer I learn something new every day and I experience something
+weird at least once an hour.</p>
+
+<p>So expect some rants but hopefully mostly tips about vim, tmux, ruby, my
+workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Supporting IE is too much work]]></title>
