@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: zsh | Bartj3]]></title>
+  <link href="http://bartj3.github.com/blog/categories/zsh/atom.xml" rel="self"/>
+  <link href="http://bartj3.github.com/"/>
+  <updated>2013-10-16T22:33:58+02:00</updated>
+  <id>http://bartj3.github.com/</id>
+  <author>
+    <name><![CDATA[Bart van Zon]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Setting up your shell: oh-my-zsh]]></title>
+    <link href="http://bartj3.github.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/"/>
+    <updated>2013-10-16T21:47:00+02:00</updated>
+    <id>http://bartj3.github.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh</id>
+    <content type="html"><![CDATA[<p>Up until not too long ago I barely used the terminal, I used it when absolutely
+necessary but whenever it was possible I immediately switch to a GUI for
+whatever I was doing. After reading yet another &ldquo;Why Vim is awesome&rdquo; blog I
+decided to make the switch from Textmate to Vim. And once I was editing in Vim
+I noticed that I was more productive by just fullscreening my terminal and
+staying in the terminal as much as possible. Without continuously switching
+between my mouse and keyboard I got faster and faster at the stuff I do most
+of my day: coding and everything related to it. Since then I&rsquo;ve been trying to
+optimize my work flow as much as possible.</p>
+
+<p>The first step to having a pleasant terminal environment is getting the proper
+shell. I&rsquo;ve picked <a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a>. Not
+because I think zsh is way better then bash or the few other alternatives,
+because I honestly wouldn&rsquo;t know whether it&rsquo;s actually better. But because
+oh-my-zsh is crazy simple to install and configure, and instantly gives you
+awesome benefits. One of the biggest is the auto completion, especially when
+just getting started in terminal it&rsquo;s great when you vaguely remember a command
+that you can just press tab and it&rsquo;ll suggest a bunch of commands for you to
+use. Another great one is the theming options that come with oh-my-zsh. The
+starting theme is awesome on itself, but whenever you have some spare time you
+should really try customizing a theme to your own desire.</p>
+
+<p>Installing
+Obviously they&rsquo;ve got installing instructions
+<a href="https://github.com/robbyrussell/oh-my-zsh">on their github page</a>, however if
+you&rsquo;re a mac user installing oh-my-zsh is just a simple oneliner:
+<code>
+curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+</code></p>
+
+<p>Have fun!</p>
+]]></content>
+  </entry>
+  
+</feed>
