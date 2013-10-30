@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | Bartj3]]></title>
+  <link href="http://www.bartvanzon.com/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://www.bartvanzon.com/"/>
+  <updated>2013-10-30T21:55:59+01:00</updated>
+  <id>http://www.bartvanzon.com/</id>
+  <author>
+    <name><![CDATA[Bart van Zon]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The world of Objective-C through Ruby eyes]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/10/30/the-world-of-objective-c-through-ruby-eyes/"/>
+    <updated>2013-10-30T20:45:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/10/30/the-world-of-objective-c-through-ruby-eyes</id>
+    <content type="html"><![CDATA[<p>My contract says <em>Developer</em> which might sound a bit allround but up until
+recently 95% of the development I did was Ruby on Rails. With a rare sidestep
+to Actionscript, Objective-C, Coffeescript, plain Ruby and more. I&rsquo;ve always
+wanted to do some more Objective-C and in my spare time I&rsquo;ve made one or two
+apps in the past (actually one finished and about 10 started but never finished
+;)) But I believe the only way to learn something properly is by doing it 40
+hours a week. So a couple of weeks ago I&rsquo;ve finally had the luck that we
+(Wirelab) got an Objective-C job and it was quiet enough for me to focus on
+picking up Objective-C and building the app.</p>
+
+<p>As I&rsquo;m a Ruby developer and more specifically a Rails developer I&rsquo;m quite a lazy
+developer. When I run into a problem more often then not there&rsquo;s a gem to solve
+it for me or there&rsquo;s a blog that explains step by step how to solve it. Rarely
+I spend days or even hours on a single problem anymore.</p>
+
+<!-- more -->
+
+
+<p>So it was quite a shock for me to find the state the Objective-C &ldquo;community&rdquo; is
+in. I say &ldquo;community&rdquo; because I&rsquo;ve probably looked for it in the wrong places,
+but the blogposts, tutorials and stack overflow answers (and questions) seem to
+be of a poor quality compared with Ruby. The pride that ruby developers have in
+their work doesn&rsquo;t seem to be present in the Objective-C scene: if it works its
+good.</p>
+
+<p>I don&rsquo;t want my code to work, I want my code to <strong>shine</strong>. I&rsquo;ve been lucky to
+have a friend who&rsquo;s an experienced Objective-C developer that has been pushing
+me in the right direction last couple of weeks because I haven&rsquo;t found the
+shining ambition a lot online. Like I&rsquo;ve said before maybe I&rsquo;ve just been
+looking in the wrong places so please do correct me if I&rsquo;m wrong. One awesome
+thing the Objective-C community does have is <a href="http://cocoapods.org/">Cocoapods</a>.
+On there I&rsquo;ve found great pods (Objective-C&rsquo;s gems) like
+<a href="https://github.com/AFNetworking/AFNetworking">AFNetworking</a>,
+<a href="https://github.com/samvermette/SVProgressHUD">SVProgressHUD</a>,
+<a href="https://github.com/gotosleep/JASidePanels">JASidePanels</a> and many more. It&rsquo;s
+not only an easy way to find these gems to make your life easier, it&rsquo;s also a
+place to display your own shining code. (There is one thing wrong with these pods
+though&hellip; They&rsquo;re named after the thing they actually do! Aweful, I&rsquo;ve always
+loved the smart gem names like Nokogiri, Capybara and Koala.</p>
+
+<p>I want to share my way of being a lazy developer with the Objective-C developers
+so I&rsquo;ve decided to build some gems, or actually I should say pods. As a fresh
+developer I will probably mess some things up badly, but I might also fix some
+stuff thats weird for me but the experienced developers take for granted.</p>
+
+<p>Last week I&rsquo;ve worked on <code>NSDate+RelativeTime</code>, a pod you can find on
+<a href="http://cocoapods.org/?q=nsdate%20relative%20time%20bart">Cocoapods</a> or on
+<a href="https://github.com/bartj3/NSDate-RelativeTime">GitHub</a>. It got some positive
+feedback since I&rsquo;ve posted it so I&rsquo;ll assume people are using it. Sadly there&rsquo;s
+no actual stats on pod usage like there is with Rubygems. And I&rsquo;ve got another
+pod in the works.</p>
+
+<p>I&rsquo;m pretty satisfied with the result as it solves a problem I ran into a couple
+of weeks ago and there didn&rsquo;t seem to be anything like this yet so I hope it
+helps some other developers be lazy like me.</p>
+
+<p>A thing in the pod that definitely doesn&rsquo;t shine yet is it&rsquo;s tests. Testing
+with Objective-C, and especially continuous integration seems to be way harder
+then it is with Ruby. And most of the resources I found were outdated. It
+frustrates me I need to generate an entire project while there&rsquo;s only one file
+with actual tests. And besides that only IOS is tested while it should work fine
+on OSX as well, but I don&rsquo;t have the tests to prove it. If there&rsquo;s anyone out
+there who would like to pair with me to get some more robust tests running and
+getting some kind of CI setup that&rsquo;d be awesome.</p>
+
+<h3>I&rsquo;m a lazy developer and working on making Objective-C developers just as lazy as me!</h3>
+]]></content>
+  </entry>
+  
+</feed>

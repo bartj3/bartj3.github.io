@@ -1,31 +1,37 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://bartj3.github.com/blog/2012/02/15/hello-world/</loc>
+        <loc>http://www.bartvanzon.com/blog/2012/02/15/hello-world/</loc>
         <lastmod>2013-10-16T22:30:28+02:00</lastmod>
     </url>
     <url>
-        <loc>http://bartj3.github.com/blog/2012/05/09/supporting-ie-is-too-much-work/</loc>
-        <lastmod>2013-10-16T22:30:28+02:00</lastmod>
+        <loc>http://www.bartvanzon.com/blog/2012/05/09/supporting-ie-is-too-much-work/</loc>
+        <lastmod>2013-10-30T21:35:06+01:00</lastmod>
     </url>
     <url>
-        <loc>http://bartj3.github.com/blog/2013/10/15/yet-another-shot/</loc>
-        <lastmod>2013-10-16T22:30:28+02:00</lastmod>
+        <loc>http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot/</loc>
+        <lastmod>2013-10-30T21:34:56+01:00</lastmod>
     </url>
     <url>
-        <loc>http://bartj3.github.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/</loc>
-        <lastmod>2013-10-16T22:30:28+02:00</lastmod>
+        <loc>http://www.bartvanzon.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/</loc>
+        <lastmod>2013-10-30T21:35:17+01:00</lastmod>
     </url>
     <url>
-        <loc>http://bartj3.github.com/blog/archives/</loc>
-        <lastmod>2013-10-16T22:30:28+02:00</lastmod>
+        <loc>
+            http://www.bartvanzon.com/blog/2013/10/30/the-world-of-objective-c-through-ruby-eyes/
+        </loc>
+        <lastmod>2013-10-30T21:54:49+01:00</lastmod>
     </url>
     <url>
-        <loc>http://bartj3.github.com/</loc>
-        <lastmod>2013-10-16T22:30:28+02:00</lastmod>
+        <loc>http://www.bartvanzon.com/blog/archives/</loc>
+        <lastmod>2013-10-30T21:54:49+01:00</lastmod>
     </url>
     <url>
-        <loc>http://bartj3.github.com/robots.txt</loc>
+        <loc>http://www.bartvanzon.com/</loc>
+        <lastmod>2013-10-30T21:54:49+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://www.bartvanzon.com/robots.txt</loc>
         <lastmod>2013-10-16T22:30:28+02:00</lastmod>
     </url>
 </urlset>

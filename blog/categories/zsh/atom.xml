@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: zsh | Bartj3]]></title>
-  <link href="http://bartj3.github.com/blog/categories/zsh/atom.xml" rel="self"/>
-  <link href="http://bartj3.github.com/"/>
-  <updated>2013-10-16T22:33:58+02:00</updated>
-  <id>http://bartj3.github.com/</id>
+  <link href="http://www.bartvanzon.com/blog/categories/zsh/atom.xml" rel="self"/>
+  <link href="http://www.bartvanzon.com/"/>
+  <updated>2013-10-30T21:55:59+01:00</updated>
+  <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Setting up your shell: oh-my-zsh]]></title>
-    <link href="http://bartj3.github.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/"/>
+    <link href="http://www.bartvanzon.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/"/>
     <updated>2013-10-16T21:47:00+02:00</updated>
-    <id>http://bartj3.github.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh</id>
+    <id>http://www.bartvanzon.com/blog/2013/10/16/setting-up-your-shell-oh-my-zsh</id>
     <content type="html"><![CDATA[<p>Up until not too long ago I barely used the terminal, I used it when absolutely
 necessary but whenever it was possible I immediately switch to a GUI for
 whatever I was doing. After reading yet another &ldquo;Why Vim is awesome&rdquo; blog I
@@ -27,6 +27,9 @@ staying in the terminal as much as possible. Without continuously switching
 between my mouse and keyboard I got faster and faster at the stuff I do most
 of my day: coding and everything related to it. Since then I&rsquo;ve been trying to
 optimize my work flow as much as possible.</p>
+
+<!-- more -->
+
 
 <p>The first step to having a pleasant terminal environment is getting the proper
 shell. I&rsquo;ve picked <a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a>. Not
