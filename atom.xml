@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://www.bartvanzon.com/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-10-30T21:55:59+01:00</updated>
+  <updated>2013-11-02T09:17:20+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Switching Postgresql on a Mac]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/02/switching-postgresql-on-a-mac/"/>
+    <updated>2013-11-02T09:03:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/02/switching-postgresql-on-a-mac</id>
+    <content type="html"><![CDATA[<p>Earlier today I decided to switch from <a href="http://postgresapp.com">Postgres.app</a> to
+a simple homebrew install of postgresql. Not because I&rsquo;m not satisfied with the
+app but I think it&rsquo;s just a bit overkill to start up a database. Together with
+the <a href="https://github.com/mperham/lunchy">lunchy gem</a> (a launchctl wrapper)
+I found yesterday switching should be a piece of cake. So I threw Postgres.app
+in the trashbin. Entered <code>brew install postgresql</code> and everything was supposed
+to be unicorns and rainbows.</p>
+
+<!-- more -->
+
+
+<p>However I kept getting this error when trying to interact with the database via
+Rails:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>could not connect to server: No such file or directory
+</span><span class='line'>Is the server running locally and accepting
+</span><span class='line'>connections on Unix domain socket "/var/pgsql_socket/.s.PGSQL.5432"?</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I had absolutely no clue where to look but after a while of messing around I
+figured it out, the <code>pg</code> gem I use with Rails was installed with the old
+Postgresql installed. And now I switched databases it couldn&rsquo;t connect anymore.
+The solution is simple, <strong>just uninstall the pg gem and reinstall it</strong>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The world of Objective-C through Ruby eyes]]></title>
