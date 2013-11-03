@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://www.bartvanzon.com/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-02T09:17:20+01:00</updated>
+  <updated>2013-11-03T17:25:07+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,47 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Getting started with Vim]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/03/getting-started-with-vim/"/>
+    <updated>2013-11-03T10:20:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/03/getting-started-with-vim</id>
+    <content type="html"><![CDATA[<p>I&rsquo;ve started using Vim about a year ago, so I&rsquo;m definitely not an experienced
+user. But along the way I&rsquo;ve learned some neat tricks which I would like to
+share with you.</p>
+
+<!-- more -->
+
+
+<p>First there&rsquo;s installing Vim itself, sure if you&rsquo;re a Mac user Vim comes
+preinstalled. But if you want it to play nice with some of the available plugins
+you&rsquo;ll need a Vim that&rsquo;s been compiled with Ruby support. On a Mac there&rsquo;s a
+couple ways to do it:<br/>
+<strong>The awesome way</strong>: Google like crazy, find the correct
+files, setup the configuration properly and compile it yourself. I&rsquo;ve tried this
+a while ago and got this working in a couple of hours, sadly I broke it several
+weeks later and never got it working again.<br/>
+Luckily there&rsquo;s another way, <strong>The lazy way</strong>: <code>brew install macvim</code></p>
+
+<p>Once you&rsquo;ve got Vim running it&rsquo;s time for the hard part, actually using it. When
+you&rsquo;re coming from an editor like Textmate or Sublime or maybe even a complete
+IDE Vim will take some getting used to. Luckily Vim has an insanely good
+help file. When you start Vim just access it by typing <code>:h</code>. EVERYTHING is
+different in Vim, and made for developer happiness, even something as simply
+navigation through a file. Sure you can use the arrow keys to move around, but
+there&rsquo;s ways way more effective than that, and the help file will slowly guide
+you through those ways. Just start reading the help file and instead of an
+enormous list of options it&rsquo;ll tell you step by step how to get started. After
+you&rsquo;ve got the basic hang of (very simple) navigation it&rsquo;ll suggest you to use
+vimtutor and I completely agree. Vimtutor is an awesome tool to learn the Vim
+basics.</p>
+
+<p>Once you&rsquo;ve installed Vim and worked your way through Vimtutor it&rsquo;s time to
+configure Vim to your own taste, I&rsquo;ll explain where to get started in a blogpost
+tomorrow.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Switching Postgresql on a Mac]]></title>
