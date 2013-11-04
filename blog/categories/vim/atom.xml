@@ -4,7 +4,7 @@
   <title><![CDATA[Category: vim | Bartj3]]></title>
   <link href="http://www.bartvanzon.com/blog/categories/vim/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-03T17:25:07+01:00</updated>
+  <updated>2013-11-04T21:26:57+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,156 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Starting on your vimconfig]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/04/starting-on-your-vimconfig/"/>
+    <updated>2013-11-04T19:47:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/04/starting-on-your-vimconfig</id>
+    <content type="html"><![CDATA[<p>Once you&rsquo;ve installed Vim(didn&rsquo;t install it yet?
+<a href="/blog/2013/11/03/getting-started-with-vim/">check out this blogpost</a>) it&rsquo;s time
+to setup your configuration file, where the Vim magic happens. Vim
+configurations are different for each developer, you start out with a blank
+configuration file, or maybe with a copy of a vimrc of a developer you know and
+over the years as you grow as a developer your vimrc will grow with you.</p>
+
+<!-- more -->
+
+
+<p>Your vimrc is something to be proud of, it shows what awesome work flow
+improvements you&rsquo;ve made and it shows how you know how to mold your tools
+completely to work for you. A lot of developers share their dot files on GitHub
+and if the developer&rsquo;s a Vim user it&rsquo;s very likely you can find his vimrc there
+as well. Vims configuration file can be found in <code>~/.vimrc</code>, and obviously the
+best way to edit it is in Vim. But as you might need some time to get used to
+editing text and navigating through it in Vim you could of course open it in
+your (previous) favorite text editor as well.</p>
+
+<p>I&rsquo;ll show you some of the lines you can put in your vimrc that I have in there,
+and of which I believe you really can&rsquo;t do without. If you would like to know
+more about a setting then I explained about it, remember that you can use Vim
+help for all of this stuff (for example <code>:h nocompatible</code>).</p>
+
+<p><code>vim
+set nocompatible
+</code>
+This will tell Vim to actually behave like Vim, and not try to be compatible
+with Vi. An old editor which was created way before I was even born, so I can&rsquo;t
+really be bothered about compatibility with it. I should probably look up what
+the exact differences are but I was told this should be in there, so now I&rsquo;m
+telling you.</p>
+
+<p><code>vim
+syntax enable
+</code>
+Tell Vim to use color syntax highlighting, this will make coding a lot more
+pleasant.</p>
+
+<p><code>vim
+nnoremap &lt;Left&gt; :echoe "Use h"&lt;CR&gt;
+nnoremap &lt;Right&gt; :echoe "Use l"&lt;CR&gt;
+nnoremap &lt;Up&gt; :echoe "Use k"&lt;CR&gt;
+nnoremap &lt;Down&gt; :echoe "Use j"&lt;CR&gt;
+</code>
+I actually don&rsquo;t have these in my vimrc anymore but used to have this for quite
+a while. In Vim you really (really!) shouldn&rsquo;t use the arrow keys for
+navigation, I had a hard time doing so, so I used this set of configurations to
+disable the key and tell me what key to use.</p>
+
+<p><code>vim
+set autoindent
+set smartindent
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set copyindent
+set listchars=tab:··,trail:·
+set list
+</code>
+Auto indentation makes your life easier, these settings won&rsquo;t only take care of
+your indentation, they will also make sure you&rsquo;re using spaces instead of tabs
+for indentation. And last but not least they&rsquo;ll show you if the person before
+you messed his tabs/spaces up by showing tabs in your code and showing trailing
+spaces. The whole tabs vs spaces ends up being your personal preference so you
+might want to tweak this to match your own preference.</p>
+
+<p><code>vim
+set cursorline
+</code>
+It highlights the entire line your cursor is on, not quite a must have, but I
+think it just makes coding a bit more pleasant.</p>
+
+<p><code>vim
+set colorcolumn=80
+</code>
+You should really try to keep your lines shorter then 80 characters, it makes
+your code way easier to read and has the nice advantage that you can actually
+split screen your code on a laptop as well. This setting will draw a line at the
+80 character limit, it&rsquo;s not prohibiting you from creating longer lines, but
+just subtly reminding you.</p>
+
+<p><code>vim
+let mapleader=","
+</code>
+A lot of the shortcuts in Vim use the leader key to trigger them, (and the longer
+you&rsquo;re developing the more you&rsquo;ll create) the default leader key however is <code>\</code>
+which is pretty annoying, the comma is easy to reach so mapping the leader key to
+your comma will make a lot of your shortcuts easier.</p>
+
+<p><code>vim
+set backspace=2
+</code>
+By default Vim can have some pretty weird behaviors, this corrects one of them.
+For example: Vim won&rsquo;t remove newlines with backspace by default. Annoying!</p>
+
+<p><code>vim
+set history=1000
+</code>
+When using Vim in normal mode (where you enter the commands) you can navigate
+through your previous commands using the arrow keys, by default it stores the
+last 20 commands you gave Vim which normally should be more then enough. But it
+never hurts to be safe, in case you forgot that awesome command you used a while
+ago.</p>
+
+<p><code>vim
+set relativenumber
+</code>
+This is an incredible setting which took me way to long to find, navigating to
+Vim can be a guess sometimes, you want to delete the piece of code in the next
+couple of lines but how many lines is it exactly? You&rsquo;re at line 15, the other
+code is at line 29, so thats 14 lines&hellip; These simple calculations will take a
+slight amount of your time which would have been better spend coding. Relative
+numbers will show you relative line numbers. Which means that in the gutter
+where normally the line numbers start with 1 at the top of the file and go down
+the gutter will show the current line as 0, the line above and below it as 1,
+and above and below that as 2 etc.</p>
+
+<p><code>vim
+set encoding=utf-8
+</code>
+This one should be pretty obvious: it sets the character encoding used inside
+Vim, it&rsquo;s not default though so make sure you set it.</p>
+
+<p><code>vim
+nmap k gk
+nmap j gj
+</code>
+When using <code>k</code> and <code>j</code> to navigate up and down your code you expect to go to the
+next line on your screen, thats not default though. Vim will send you to the
+next line in the file, which if Vim wrapped the line because your screen&rsquo;s too
+small might not be exactly what you meant. This completely annoyed me so I
+remapped <code>k</code> and <code>j</code> to <code>gk</code> and <code>gj</code> which will make them behave like I want
+them to.</p>
+
+<p>These configurations are just the tip of the iceberg, there are way more options
+to configure, but these should get you started. Make sure to browse through
+other people&rsquo;s configurations as often as possible to learn new tricks and keep
+tweaking your configuration to make your Vim the best there is.</p>
+
+<p>I&rsquo;ll be writing more posts about Vim (<a href="/blog/categories/vim/">read more</a>), so
+make sure to read those too, expect articles about plugins, workflows and more!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Getting started with Vim]]></title>
