@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Yet another shot - Bartj3</title>
+  <title>Keeping your workspace in sync using Dropbox - Bartj3</title>
   <meta name="author" content="Bart van Zon">
 
   
-  <meta name="description" content="Over the years I tried blogging a couple of times. However for some reason I
-never seemed able to get some rhythm in it, to keep blogging. The last &hellip;">
+  <meta name="description" content="I spend most of my time working on two systems, a desktop at work and a laptop
+at home. As I spend a lot of that time in the terminal I&rsquo;ve &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ never seemed able to get some rhythm in it, to keep blogging. The last &hellip;"
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot">
+  <link rel="canonical" href="http://www.bartvanzon.com/blog/2013/11/07/keeping-your-workspace-in-sync-using-dropbox">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Bartj3" type="application/atom+xml">
@@ -82,7 +82,7 @@ never seemed able to get some rhythm in it, to keep blogging. The last &hellip;"
   
   <header>
     
-      <h1 class="entry-title">Yet Another Shot</h1>
+      <h1 class="entry-title">Keeping Your Workspace in Sync Using Dropbox</h1>
     
     
       <p class="meta">
@@ -98,45 +98,49 @@ never seemed able to get some rhythm in it, to keep blogging. The last &hellip;"
   
 
 
-<time datetime="2013-10-15T08:07:00+02:00" pubdate data-updated="true">Oct 15<span>th</span>, 2013</time>
+<time datetime="2013-11-07T08:52:00+01:00" pubdate data-updated="true">Nov 7<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Over the years I tried blogging a couple of times. However for some reason I
-never seemed able to get some rhythm in it, to keep blogging. The last article
-on this blog is well over a year old. And the day I wrote it I was sure it was
-the first of many more to come. The post got some traction on
-<a href="https://news.ycombinator.com">Hacker News</a> and I got some great feedback.
-However the article was a rant, and rants always seem to get traction, and are
-the easiest to write.</p>
+<div class="entry-content"><p>I spend most of my time working on two systems, a desktop at work and a laptop
+at home. As I spend a lot of that time in the terminal I&rsquo;ve setup some things to
+make sure my shell works exactly the same on both systems.</p>
 
 <!-- more -->
 
 
-<p>Last couple of months I&rsquo;ve had the honor to be invited to speak at a couple of
-usergroups and conferences, and I got some great feedback. People were
-enthoustiastic about what I had to tell them, a surprise to me because I thought
-my skills to be pretty mediocre. Turns out that I might be comparing myself with
-the wrong people. There&rsquo;ll always be some guy better at Vim, or some guy better
-at Ruby, and sadly for me plenty of guys better at skateboarding and
-snowboarding&hellip; but (this sounds obvious but wasn&rsquo;t to me) as it turns out
-there&rsquo;s a lot of people that have different focusses when learning new things.
-People I can definately teach some new tricks.</p>
+<p>To achieve this I use <a href="https://db.tt/gpBR2QOx">Dropbox</a> to sync all of my
+dotfiles, if you haven&rsquo;t used Dropbox before you should definately give it a go.
+It&rsquo;s a tool that keeps a folder in sync between your separate computer systems
+(and phone) with the nice bonus of automaticly saving previous versions of all
+of those files so if you accidentaly remove or overwrite one you can get it back
+easily.</p>
 
-<p>Inspired by <a href="http://blog.jenniferdewalt.com/post/62998082815/after-180-websites-im-ready-to-start-the-rest-of-my">Jennifer Dewalt</a>
-who created 180 websites in 180 days, and <a href="http://swizec.com/blog/inspired-by-the-180-websites-i-will-understand-52-academic-papers-in-52-weeks/swizec/6365">Swizec Teller</a>
-whose plan it is to understand 52 academic papers in 52 weeks I&rsquo;ve set my own
-goal: I&rsquo;m not going to do anything daily, that&rsquo;ll drive me crazy but I will try
-to blog as often as possible with an absolute minimum of 2 blogs a week. They
-don&rsquo;t have to be pagelong stories, they could be glorified tweets, but as a
-fulltime developer I learn something new every day and I experience something
-weird at least once an hour.</p>
+<p>In my Dropbox folder I&rsquo;ve got a folder called <code>global files/dotfiles</code> which
+contains a lot of my dotfiles. The files and folders I keep in there are:
+<code>.gemrc .gitconfig, .gitignore_global, .oh-my-zsh, .railsrc, .tmux.conf, .vim,
+.vimrc, .zsh_history, .zshenv</code></p>
 
-<p>So expect some rants but hopefully mostly tips about vim, tmux, ruby, my
-workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p>
+<p>Obviously you should judge for yourself what files you will put in there but
+these files are the ones that make sense for me to keep in sync.</p>
+
+<p>To keep the files in sync you&rsquo;ll have to copy the originals files to your
+dropbox folder and create a symlink to the Dropbox location in the old folder.
+For example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd ~
+</span><span class='line'>mv .gemrc Dropbox/global\ files/dotfiles/.gemrc
+</span><span class='line'>ln -s Dropbox/global\ files/dotfiles/.gemrc .gemrc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this your editor and shell should work exactly the same on all of your
+systems.</p>
 </div>
 
 
@@ -159,8 +163,14 @@ workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p
   
 
 
-<time datetime="2013-10-15T08:07:00+02:00" pubdate data-updated="true">Oct 15<span>th</span>, 2013</time>
+<time datetime="2013-11-07T08:52:00+01:00" pubdate data-updated="true">Nov 7<span>th</span>, 2013</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/dotfiles/'>dotfiles</a>
+  
+</span>
 
 
     </p>
@@ -174,10 +184,8 @@ workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/05/09/supporting-ie-is-too-much-work/" title="Previous Post: Supporting IE is too much work">&laquo; Supporting IE is too much work</a>
+        <a class="basic-alignment left" href="/blog/2013/11/04/starting-on-your-vimconfig/" title="Previous Post: Starting on your vimconfig">&laquo; Starting on your vimconfig</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/" title="Next Post: Setting up your shell: oh-my-zsh">Setting up your shell: oh-my-zsh &raquo;</a>
       
     </p>
   </footer>
@@ -272,8 +280,8 @@ workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot/';
-        var disqus_url = 'http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot/';
+        var disqus_identifier = 'http://www.bartvanzon.com/blog/2013/11/07/keeping-your-workspace-in-sync-using-dropbox/';
+        var disqus_url = 'http://www.bartvanzon.com/blog/2013/11/07/keeping-your-workspace-in-sync-using-dropbox/';
         var disqus_script = 'embed.js';
       
     (function () {

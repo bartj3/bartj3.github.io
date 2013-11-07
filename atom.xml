@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://www.bartvanzon.com/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-06T21:09:30+01:00</updated>
+  <updated>2013-11-07T10:02:33+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,50 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Keeping your workspace in sync using Dropbox]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/07/keeping-your-workspace-in-sync-using-dropbox/"/>
+    <updated>2013-11-07T08:52:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/07/keeping-your-workspace-in-sync-using-dropbox</id>
+    <content type="html"><![CDATA[<p>I spend most of my time working on two systems, a desktop at work and a laptop
+at home. As I spend a lot of that time in the terminal I&rsquo;ve setup some things to
+make sure my shell works exactly the same on both systems.</p>
+
+<!-- more -->
+
+
+<p>To achieve this I use <a href="https://db.tt/gpBR2QOx">Dropbox</a> to sync all of my
+dotfiles, if you haven&rsquo;t used Dropbox before you should definately give it a go.
+It&rsquo;s a tool that keeps a folder in sync between your separate computer systems
+(and phone) with the nice bonus of automaticly saving previous versions of all
+of those files so if you accidentaly remove or overwrite one you can get it back
+easily.</p>
+
+<p>In my Dropbox folder I&rsquo;ve got a folder called <code>global files/dotfiles</code> which
+contains a lot of my dotfiles. The files and folders I keep in there are:
+<code>.gemrc .gitconfig, .gitignore_global, .oh-my-zsh, .railsrc, .tmux.conf, .vim,
+.vimrc, .zsh_history, .zshenv</code></p>
+
+<p>Obviously you should judge for yourself what files you will put in there but
+these files are the ones that make sense for me to keep in sync.</p>
+
+<p>To keep the files in sync you&rsquo;ll have to copy the originals files to your
+dropbox folder and create a symlink to the Dropbox location in the old folder.
+For example:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd ~
+</span><span class='line'>mv .gemrc Dropbox/global\ files/dotfiles/.gemrc
+</span><span class='line'>ln -s Dropbox/global\ files/dotfiles/.gemrc .gemrc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this your editor and shell should work exactly the same on all of your
+systems.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Starting on your vimconfig]]></title>
