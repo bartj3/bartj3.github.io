@@ -4,7 +4,7 @@
   <title><![CDATA[Category: vim | Bartj3]]></title>
   <link href="http://www.bartvanzon.com/blog/categories/vim/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-07T10:02:33+01:00</updated>
+  <updated>2013-11-12T18:35:26+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,62 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Configure your Vim for easy searching]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/12/configure-your-vim-for-easy-searching/"/>
+    <updated>2013-11-12T18:26:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/12/configure-your-vim-for-easy-searching</id>
+    <content type="html"><![CDATA[<p>When navigating through Vim you&rsquo;ll search a lot using the <code>/</code> command, which
+works &lsquo;ok&rsquo; by default but there&rsquo;s a couple of settings you can make to increase
+Vims search functionality a lot.</p>
+
+<!-- more -->
+
+
+<p>These are the settings I have in my <code>.vimrc</code>:</p>
+
+<p><code>vim
+set incsearch
+</code>
+Normally Vim will wait with searching until you&rsquo;ve completed your search pattern
+and once you press enter it will search for a match. Once you&rsquo;ve set <code>incearch</code>
+it will immediately start searching as you type. So you&rsquo;ll see where the first
+match of your search pattern is, pretty handy as you&rsquo;ll immediately see whether
+your pattern is correct or not.</p>
+
+<p><code>vim
+set hlsearch
+</code>
+This will highlight all of the matches of your search pattern, making it easy to
+show where and how often your pattern matches.</p>
+
+<p><code>vim
+autocmd InsertEnter * :setlocal nohlsearch
+autocmd InsertLeave * :setlocal hlsearch
+</code>
+This will disable the highlights when you enter insertmode and will turn them
+back on when you leave insertmode. So if you&rsquo;ve searched and want to change
+something it&rsquo;ll stop highlighting the results but once you&rsquo;re done editing
+you&rsquo;ll be able to continue your search.</p>
+
+<p><code>vim
+map &lt;Leader&gt;cs :nohlsearch&lt;cr&gt;
+</code>
+Highlighting your results is great, but you&rsquo;ll want to turn the highlights off
+once you&rsquo;re done with them. Typing <code>:nohlsearch</code> will do the trick, but as this
+is something I do quite often I&rsquo;ve created a shortcut for it: <code>&lt;Leader&gt;cs</code>
+clears all the search results (<strong>C</strong>lear <strong>S</strong>earch).</p>
+
+<p>There&rsquo;s plenty more stuff to tweak about searching through Vim, these are the
+ones I&rsquo;ve set but if you want to learn more tricks be sure to check out Vim&rsquo;s
+awesome help guides. They&rsquo;ve got an entire chapter about searching, check it out
+at: <code>:h usr_27</code></p>
+
+<p>Am I searching through my files the hard way or am I missing an awesome setting?
+Please let me know in the comments, via mail or on Twitter!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Starting on your vimconfig]]></title>

@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Yet another shot - Bartj3</title>
+  <title>Configure your Vim for easy searching - Bartj3</title>
   <meta name="author" content="Bart van Zon">
 
   
-  <meta name="description" content="Over the years I tried blogging a couple of times. However for some reason I
-never seemed able to get some rhythm in it, to keep blogging. The last &hellip;">
+  <meta name="description" content="When navigating through Vim you&rsquo;ll search a lot using the / command, which
+works &lsquo;ok&rsquo; by default but there&rsquo;s a couple of &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@ never seemed able to get some rhythm in it, to keep blogging. The last &hellip;"
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot">
+  <link rel="canonical" href="http://www.bartvanzon.com/blog/2013/11/12/configure-your-vim-for-easy-searching">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Bartj3" type="application/atom+xml">
@@ -82,7 +82,7 @@ never seemed able to get some rhythm in it, to keep blogging. The last &hellip;"
   
   <header>
     
-      <h1 class="entry-title">Yet Another Shot</h1>
+      <h1 class="entry-title">Configure Your Vim for Easy Searching</h1>
     
     
       <p class="meta">
@@ -98,45 +98,70 @@ never seemed able to get some rhythm in it, to keep blogging. The last &hellip;"
   
 
 
-<time datetime="2013-10-15T08:07:00+02:00" pubdate data-updated="true">Oct 15<span>th</span>, 2013</time>
+<time datetime="2013-11-12T18:26:00+01:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Over the years I tried blogging a couple of times. However for some reason I
-never seemed able to get some rhythm in it, to keep blogging. The last article
-on this blog is well over a year old. And the day I wrote it I was sure it was
-the first of many more to come. The post got some traction on
-<a href="https://news.ycombinator.com">Hacker News</a> and I got some great feedback.
-However the article was a rant, and rants always seem to get traction, and are
-the easiest to write.</p>
+<div class="entry-content"><p>When navigating through Vim you&rsquo;ll search a lot using the <code>/</code> command, which
+works &lsquo;ok&rsquo; by default but there&rsquo;s a couple of settings you can make to increase
+Vims search functionality a lot.</p>
 
 <!-- more -->
 
 
-<p>Last couple of months I&rsquo;ve had the honor to be invited to speak at a couple of
-usergroups and conferences, and I got some great feedback. People were
-enthoustiastic about what I had to tell them, a surprise to me because I thought
-my skills to be pretty mediocre. Turns out that I might be comparing myself with
-the wrong people. There&rsquo;ll always be some guy better at Vim, or some guy better
-at Ruby, and sadly for me plenty of guys better at skateboarding and
-snowboarding&hellip; but (this sounds obvious but wasn&rsquo;t to me) as it turns out
-there&rsquo;s a lot of people that have different focusses when learning new things.
-People I can definately teach some new tricks.</p>
+<p>These are the settings I have in my <code>.vimrc</code>:</p>
 
-<p>Inspired by <a href="http://blog.jenniferdewalt.com/post/62998082815/after-180-websites-im-ready-to-start-the-rest-of-my">Jennifer Dewalt</a>
-who created 180 websites in 180 days, and <a href="http://swizec.com/blog/inspired-by-the-180-websites-i-will-understand-52-academic-papers-in-52-weeks/swizec/6365">Swizec Teller</a>
-whose plan it is to understand 52 academic papers in 52 weeks I&rsquo;ve set my own
-goal: I&rsquo;m not going to do anything daily, that&rsquo;ll drive me crazy but I will try
-to blog as often as possible with an absolute minimum of 2 blogs a week. They
-don&rsquo;t have to be pagelong stories, they could be glorified tweets, but as a
-fulltime developer I learn something new every day and I experience something
-weird at least once an hour.</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">incsearch</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>So expect some rants but hopefully mostly tips about vim, tmux, ruby, my
-workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p>
+
+<p>Normally Vim will wait with searching until you&rsquo;ve completed your search pattern
+and once you press enter it will search for a match. Once you&rsquo;ve set <code>incearch</code>
+it will immediately start searching as you type. So you&rsquo;ll see where the first
+match of your search pattern is, pretty handy as you&rsquo;ll immediately see whether
+your pattern is correct or not.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'><span class="k">set</span> <span class="nb">hlsearch</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will highlight all of the matches of your search pattern, making it easy to
+show where and how often your pattern matches.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>autocmd <span class="nb">InsertEnter</span> * :<span class="k">setlocal</span> <span class="k">nohlsearch</span>
+</span><span class='line'>autocmd <span class="nb">InsertLeave</span> * :<span class="k">setlocal</span> <span class="nb">hlsearch</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will disable the highlights when you enter insertmode and will turn them
+back on when you leave insertmode. So if you&rsquo;ve searched and want to change
+something it&rsquo;ll stop highlighting the results but once you&rsquo;re done editing
+you&rsquo;ll be able to continue your search.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='vim'><span class='line'>map <span class="p">&lt;</span>Leader<span class="p">&gt;</span><span class="k">cs</span> :<span class="k">nohlsearch</span><span class="p">&lt;</span><span class="k">cr</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Highlighting your results is great, but you&rsquo;ll want to turn the highlights off
+once you&rsquo;re done with them. Typing <code>:nohlsearch</code> will do the trick, but as this
+is something I do quite often I&rsquo;ve created a shortcut for it: <code>&lt;Leader&gt;cs</code>
+clears all the search results (<strong>C</strong>lear <strong>S</strong>earch).</p>
+
+<p>There&rsquo;s plenty more stuff to tweak about searching through Vim, these are the
+ones I&rsquo;ve set but if you want to learn more tricks be sure to check out Vim&rsquo;s
+awesome help guides. They&rsquo;ve got an entire chapter about searching, check it out
+at: <code>:h usr_27</code></p>
+
+<p>Am I searching through my files the hard way or am I missing an awesome setting?
+Please let me know in the comments, via mail or on Twitter!</p>
 </div>
 
 
@@ -159,8 +184,14 @@ workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p
   
 
 
-<time datetime="2013-10-15T08:07:00+02:00" pubdate data-updated="true">Oct 15<span>th</span>, 2013</time>
+<time datetime="2013-11-12T18:26:00+01:00" pubdate data-updated="true">Nov 12<span>th</span>, 2013</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/vim/'>vim</a>
+  
+</span>
 
 
     </p>
@@ -174,10 +205,8 @@ workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/05/09/supporting-ie-is-too-much-work/" title="Previous Post: Supporting IE is too much work">&laquo; Supporting IE is too much work</a>
+        <a class="basic-alignment left" href="/blog/2013/11/07/keeping-your-workspace-in-sync-using-dropbox/" title="Previous Post: Keeping your workspace in sync using Dropbox">&laquo; Keeping your workspace in sync using Dropbox</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/10/16/setting-up-your-shell-oh-my-zsh/" title="Next Post: Setting up your shell: oh-my-zsh">Setting up your shell: oh-my-zsh &raquo;</a>
       
     </p>
   </footer>
@@ -272,8 +301,8 @@ workflow, my workspace, crazy hacks, conferences, weird experiences and more!</p
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot/';
-        var disqus_url = 'http://www.bartvanzon.com/blog/2013/10/15/yet-another-shot/';
+        var disqus_identifier = 'http://www.bartvanzon.com/blog/2013/11/12/configure-your-vim-for-easy-searching/';
+        var disqus_url = 'http://www.bartvanzon.com/blog/2013/11/12/configure-your-vim-for-easy-searching/';
         var disqus_script = 'embed.js';
       
     (function () {
