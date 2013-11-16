@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://www.bartvanzon.com/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-12T18:35:26+01:00</updated>
+  <updated>2013-11-16T08:15:05+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,73 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Blogging with Vim]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/16/blogging-with-vim/"/>
+    <updated>2013-11-16T08:13:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/16/blogging-with-vim</id>
+    <content type="html"><![CDATA[<p>Writings blog posts with Vim is awesome! Obviously, if I thought otherwise I
+wouldn&rsquo;t currently be writing this in Vim. Writing posts on my local machine
+works perfectly for me as interruptions aren&rsquo;t as big of a problem as they
+would be when I&rsquo;d be writing in some textarea online. I can just close the file,
+pick up whatever is interrupting me and continue whenever I want. Another nice
+thing is that I often write posts while traveling by public transport and
+writing the posts on my local machine means I don&rsquo;t have to rely on the internet
+the public transport offers (which actually isn&rsquo;t too bad in the Netherlands).
+Another thing that blogging in Vim makes possible is that you can just open a
+single terminal screen, set it to fullscreen and write without any distractions.</p>
+
+<p>Blogging in Vim wouldn&rsquo;t be half as cool if you wouldn&rsquo;t be able to deploy your
+markdown files straight to your blog from the commandline. Blogging from your
+terminal, everyone wants that right? Or is it just for weird developers? Ah
+well&hellip; <a href="https://github.com/imathis/octopress">Octopress</a> makes this possible!
+You can write your post in markdown, run a rake command and tadaaa: it&rsquo;s
+deployed and online for everyone to read! To get started with Octopress it will
+take some minor configuration, or if you&rsquo;re anything like me a lot of
+configuration but once setup it&rsquo;s a great way to blog.
+<a href="http://octopress.org">The Octopress site</a> has plenty of guides explaining
+where to get started and where to start tweaking if you want a custom solution.</p>
+
+<p>There&rsquo;s a couple of downsides of writing in Vim which are fixable by setting
+your configuration properly. By default there&rsquo;s no line breaking in Vim so if
+you would just start typing away all of your text will end up becoming one long
+giant line of text. This is fixable by typing <code>:set textwidth=80</code>, keeping your
+lines under 80 lines is a great convention while coding. But it works great for
+keeping your texts readable as well. This is a setting I do not have in my
+.vimrc because I only want this set while writing blog posts, automatic
+line breaks are probably a bad idea while coding. I do have the setting
+<code>:set colorcolumn=80</code> in my .vimrc which shows where the 80th character is in
+every line so I can (attempt) to stay under the 80 char limit manually while
+coding.</p>
+
+<p>If you already started on your post without setting text width or if you
+copy-pasted something and ruined your formatting you can select the text using
+visualmode and type <code>gq</code> to reformat all of the selected text. Obviously it
+would be even better if you use <code>gg{motion}</code> to achieve the same with less
+keystrokes but personally I often use visualmode for this action.</p>
+
+<p>For me one of the biggest loss when using Vim is the lack of spell checking,
+because English isn&rsquo;t my native tongue I <s>definately</s> definitely need it
+(and to be honest I a need it when writing Dutch texts as well). Of course
+spell checking is something you can turn on, and with plenty of supported
+languages. To turn spell checking on and highlight the incorrectly spelled words
+use the command <code>:setlocal spell spelllang=en_us</code>. You can then navigate
+forwards (<code>]s</code>) and backwards (<code>[s</code>) through these incorrectly spelled words and
+by using the <code>z=</code> command you&rsquo;ll open up the list with correct spelling
+suggestions. When writing tech articles there&rsquo;ll probably be a bunch of words
+that are not in the list and thus incorrectly marked as incorrect. You can add
+these words to the wordlist by using the <code>zg</code> command. There&rsquo;s an enormous
+amount of alternative commands when fixing your typo&rsquo;s and spelling errors,
+be sure to check out the relative help files at <code>:h spell</code>.</p>
+
+<p>Most of these settings have shortcuts which make them easier to type out, Vim
+help will tell you about them. For example <code>:help textwidth</code> (or even <code>:h
+textwidth</code>, we are lazy devs!) will tell you that setting <code>:set tw</code> will do
+exactly the same! And while you&rsquo;re in the help files anyways <code>:h set</code> will tell
+you that you should use <code>:se tw=80</code> next time you&rsquo;re setting your text width!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Configure your Vim for easy searching]]></title>
