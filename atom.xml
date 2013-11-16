@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://www.bartvanzon.com/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-16T08:15:05+01:00</updated>
+  <updated>2013-11-16T16:50:24+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -28,6 +28,9 @@ writing the posts on my local machine means I don&rsquo;t have to rely on the in
 the public transport offers (which actually isn&rsquo;t too bad in the Netherlands).
 Another thing that blogging in Vim makes possible is that you can just open a
 single terminal screen, set it to fullscreen and write without any distractions.</p>
+
+<!-- more -->
+
 
 <p>Blogging in Vim wouldn&rsquo;t be half as cool if you wouldn&rsquo;t be able to deploy your
 markdown files straight to your blog from the commandline. Blogging from your
