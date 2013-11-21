@@ -4,7 +4,7 @@
   <title><![CDATA[Bartj3]]></title>
   <link href="http://www.bartvanzon.com/atom.xml" rel="self"/>
   <link href="http://www.bartvanzon.com/"/>
-  <updated>2013-11-16T16:50:24+01:00</updated>
+  <updated>2013-11-21T16:06:56+01:00</updated>
   <id>http://www.bartvanzon.com/</id>
   <author>
     <name><![CDATA[Bart van Zon]]></name>
@@ -12,6 +12,255 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails tree structure]]></title>
+    <link href="http://www.bartvanzon.com/blog/2013/11/21/rails-tree-structure/"/>
+    <updated>2013-11-21T15:56:00+01:00</updated>
+    <id>http://www.bartvanzon.com/blog/2013/11/21/rails-tree-structure</id>
+    <content type="html"><![CDATA[<p>A couple of days ago I had to make a documents/folder structure for an app. The
+idea was that there&rsquo;s two types of objects: <strong>categories</strong> and <strong>documents</strong>,
+the user can click through categories and download documents. A category can
+contain other categories and documents. We only had to show the category the
+user is currently in, the files and categories that are in that category and
+some way to navigate one level higher. So there was no need to see children&rsquo;s
+children etc.</p>
+
+<!-- more -->
+
+
+<p>A quick search on the <a href="https://www.ruby-toolbox.com">Ruby Toolbox</a> shows
+<a href="https://github.com/stefankroes/ancestry">Ancestry</a> and a bunch of other options
+but most of them are way to complicated for the simple goal I was trying to
+achieve so I&rsquo;ve decided to build it from scratch.</p>
+
+<p>I started out with two models, the Category model, and the Document model.</p>
+
+<figure class='code'><figcaption><span>app/models/category.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Category</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:parent</span><span class="p">,</span> <span class="n">class_name</span><span class="p">:</span> <span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">foreign_key</span><span class="p">:</span> <span class="s2">&quot;parent_id&quot;</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:documents</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">children</span>
+</span><span class='line'>    <span class="nb">self</span><span class="o">.</span><span class="n">class</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">parent_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">parent_title</span>
+</span><span class='line'>    <span class="n">parent</span><span class="o">.</span><span class="n">title</span> <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">present?</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The category can belong to other categories, and that optional parent is stored
+in the <code>parent_id</code> variable. A category has a title as we need something to show
+when listing the categories and a category can have several documents in it.</p>
+
+<figure class='code'><figcaption><span>app/models/document.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Document</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:category</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Documents have a title to display them (and in a real world application probably
+a file to go with it) and it may belong to a category. If it has no category it
+should be displayed on the top level of the tree.</p>
+
+<figure class='code'><figcaption><span>db/schema.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">create_table</span> <span class="s2">&quot;categories&quot;</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;title&quot;</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">.</span><span class="n">integer</span>  <span class="s2">&quot;parent_id&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">create_table</span> <span class="s2">&quot;documents&quot;</span><span class="p">,</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">.</span><span class="n">string</span>   <span class="s2">&quot;title&quot;</span>
+</span><span class='line'>  <span class="n">t</span><span class="o">.</span><span class="n">integer</span>  <span class="s2">&quot;category_id&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The database schema should look something like this.</p>
+
+<p>One of the problems with these models is that a category can reference to ANY
+category as it&rsquo;s parent. So even itself, to prevent that we&rsquo;ll need a custom
+validator, it can be added to the category model with the following line:</p>
+
+<figure class='code'><figcaption><span>app/models/category.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">validates_with</span> <span class="no">CategoryParentValidator</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the validator itself would look something like this:</p>
+
+<figure class='code'><figcaption><span>app/validators/category_parent_validator.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Class</span> <span class="no">CategoryParentValidator</span> <span class="o">&lt;</span> <span class="ss">ActiveModel</span><span class="p">:</span><span class="ss">:Validator</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">!</span><span class="n">record</span><span class="o">.</span><span class="n">new_record?</span> <span class="o">&amp;&amp;</span> <span class="n">record</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">==</span> <span class="n">record</span><span class="o">.</span><span class="n">id</span>
+</span><span class='line'>      <span class="n">record</span><span class="o">.</span><span class="n">errors</span><span class="o">[</span><span class="ss">:parent</span><span class="o">]</span> <span class="o">&lt;&lt;</span> <span class="no">I18n</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="s1">&#39;cant_be_itself&#39;</span><span class="p">,</span> <span class="ss">scope</span><span class="p">:</span> <span class="s1">&#39;errors.messages&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If the record is new we shouldn&rsquo;t check if the parent_id is the same as the
+current id because the current id will be nil. So a new record without a parent
+would have both id&rsquo;s on nil but is still valid.</p>
+
+<p>The next step in building the tree structure is the controller:</p>
+
+<figure class='code'><figcaption><span>app/controllers/documents_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">DocumentsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="n">before_action</span> <span class="ss">:set_document</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:show</span><span class="o">]</span>
+</span><span class='line'>  <span class="n">before_action</span> <span class="ss">:set_files_variables</span><span class="p">,</span> <span class="ss">only</span><span class="p">:</span> <span class="o">[</span><span class="ss">:index</span><span class="p">,</span> <span class="ss">:show</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kp">private</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_document</span>
+</span><span class='line'>    <span class="vi">@document</span> <span class="o">=</span> <span class="no">Document</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">set_files_variables</span>
+</span><span class='line'>    <span class="vi">@selected_category</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:selected_category</span><span class="o">]</span>
+</span><span class='line'>    <span class="vi">@parent_category</span> <span class="o">=</span> <span class="n">get_parent_category_id</span><span class="p">(</span><span class="vi">@selected_category</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@categories</span> <span class="o">=</span> <span class="no">Category</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">parent_id</span><span class="p">:</span> <span class="vi">@selected_category</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@documents</span> <span class="o">=</span> <span class="no">Document</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">category_id</span><span class="p">:</span> <span class="vi">@selected_category</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">get_parent_category_id</span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">begin</span>
+</span><span class='line'>      <span class="n">selected_category</span> <span class="o">=</span> <span class="no">Category</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">selected_category</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">selected_category</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">present?</span>
+</span><span class='line'>    <span class="k">rescue</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:RecordNotFound</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kp">nil</span> <span class="c1">#the category was not found or there was no parent</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There&rsquo;s a bunch of variables we&rsquo;re going to need in the view, the selected
+category is needed so we can show the title of the category we&rsquo;re currently in.
+The parent_category is needed to navigate to one level higher, the categories
+are the categories in the selected category and the documents are the documents
+in the selected category.</p>
+
+<figure class='code'><figcaption><span>app/views/documents/_document_list.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&lt;h3&gt;Document List&lt;/h3&gt;</span>
+</span><span class='line'><span class="x">&lt;ul id=&quot;document_list&quot;&gt;</span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@selected_category</span><span class="o">.</span><span class="n">present?</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;li class=&quot;parent&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="n">documents_path</span><span class="p">(</span><span class="n">selected_category</span><span class="p">:</span> <span class="vi">@parent_category</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;/li&gt;</span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="vi">@categories</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">category</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;li class=&quot;category&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">category</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">documents_path</span><span class="p">(</span><span class="n">selected_category</span><span class="p">:</span> <span class="n">category</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;/li&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="vi">@documents</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">document</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;li class=&quot;document </span><span class="cp">&lt;%=</span> <span class="n">document_icon_class</span><span class="p">(</span><span class="n">document</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x">&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">document</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">document_path</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">selected_category</span><span class="p">:</span> <span class="vi">@selected_category</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;/li&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">&lt;/ul&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I expected the view to be pretty complex but it turned out to be easier then I
+expected. We show the selected category, a way of navigating and a list of
+categories and files in the category. Because there&rsquo;s no need to see children&rsquo;s
+children this stays pretty simple.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Blogging with Vim]]></title>
