@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Bartj3</title>
-  <meta name="description" content="...
-">
+  <title>Configure your Vim for easy searching</title>
+  <meta name="description" content="When navigating through Vim you’ll search a lot using the / command, whichworks ‘ok’ by default but there’s a couple of settings you can make to increaseVims...">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://www.bartvanzon.com/">
+  <link rel="canonical" href="http://www.bartvanzon.com/vim/2013/11/12/configure-your-vim-for-easy-searching.html">
   <link rel="alternate" type="application/rss+xml" title="Bartj3" href="http://www.bartvanzon.com/feed.xml" />
 </head>
 
@@ -51,111 +50,63 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <div class="post">
 
-  <h1 class="page-heading">Posts</h1>
+  <header class="post-header">
+    <h1 class="post-title">Configure your Vim for easy searching</h1>
+    <p class="post-meta">Nov 12, 2013</p>
+  </header>
 
-  <ul class="post-list">
-    
-      <li>
-        <span class="post-meta">Nov 21, 2013</span>
+  <article class="post-content">
+    <p>When navigating through Vim you’ll search a lot using the <code>/</code> command, which
+works ‘ok’ by default but there’s a couple of settings you can make to increase
+Vims search functionality a lot.</p>
 
-        <h2>
-          <a class="post-link" href="/rails/2013/11/21/rails-tree-structure.html">Rails tree structure</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 16, 2013</span>
+<!-- more -->
 
-        <h2>
-          <a class="post-link" href="/vim/2013/11/16/blogging-with-vim.html">Blogging with Vim</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 12, 2013</span>
+<p>These are the settings I have in my <code>.vimrc</code>:</p>
 
-        <h2>
-          <a class="post-link" href="/vim/2013/11/12/configure-your-vim-for-easy-searching.html">Configure your Vim for easy searching</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 7, 2013</span>
+<p><code>vim
+set incsearch
+</code>
+Normally Vim will wait with searching until you’ve completed your search pattern
+and once you press enter it will search for a match. Once you’ve set <code>incearch</code>
+it will immediately start searching as you type. So you’ll see where the first
+match of your search pattern is, pretty handy as you’ll immediately see whether
+your pattern is correct or not.</p>
 
-        <h2>
-          <a class="post-link" href="/dotfiles/2013/11/07/keeping-your-workspace-in-sync-using-dropbox.html">Keeping your workspace in sync using Dropbox</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 4, 2013</span>
+<p><code>vim
+set hlsearch
+</code>
+This will highlight all of the matches of your search pattern, making it easy to
+show where and how often your pattern matches.</p>
 
-        <h2>
-          <a class="post-link" href="/vim/2013/11/04/starting-on-your-vimconfig.html">Starting on your vimconfig</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 3, 2013</span>
+<p><code>vim
+autocmd InsertEnter * :setlocal nohlsearch
+autocmd InsertLeave * :setlocal hlsearch
+</code>
+This will disable the highlights when you enter insertmode and will turn them
+back on when you leave insertmode. So if you’ve searched and want to change
+something it’ll stop highlighting the results but once you’re done editing
+you’ll be able to continue your search.</p>
 
-        <h2>
-          <a class="post-link" href="/vim/2013/11/03/getting-started-with-vim.html">Getting started with Vim</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Nov 2, 2013</span>
+<p><code>vim
+map &lt;Leader&gt;cs :nohlsearch&lt;cr&gt;
+</code>
+Highlighting your results is great, but you’ll want to turn the highlights off
+once you’re done with them. Typing <code>:nohlsearch</code> will do the trick, but as this
+is something I do quite often I’ve created a shortcut for it: <code>&lt;Leader&gt;cs</code>
+clears all the search results (<strong>C</strong>lear <strong>S</strong>earch).</p>
 
-        <h2>
-          <a class="post-link" href="/2013/11/02/switching-postgresql-on-a-mac.html">Switching Postgresql on a Mac</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 30, 2013</span>
+<p>There’s plenty more stuff to tweak about searching through Vim, these are the
+ones I’ve set but if you want to learn more tricks be sure to check out Vim’s
+awesome help guides. They’ve got an entire chapter about searching, check it out
+at: <code>:h usr_27</code></p>
 
-        <h2>
-          <a class="post-link" href="/ruby/objective-c/2013/10/30/the-world-of-objective-c-through-ruby-eyes.html">The world of Objective-C through Ruby eyes</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 16, 2013</span>
+<p>Am I searching through my files the hard way or am I missing an awesome setting?
+Please let me know in the comments, via mail or on Twitter!</p>
 
-        <h2>
-          <a class="post-link" href="/shell/zsh/2013/10/16/setting-up-your-shell-oh-my-zsh.html">Setting up your shell: oh-my-zsh</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Oct 15, 2013</span>
-
-        <h2>
-          <a class="post-link" href="/2013/10/15/yet-another-shot.html">Yet another shot</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">May 9, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/05/09/supporting-ie-is-too-much-work.html">Supporting IE is too much work</a>
-        </h2>
-      </li>
-    
-      <li>
-        <span class="post-meta">Feb 15, 2012</span>
-
-        <h2>
-          <a class="post-link" href="/2012/02/15/hello-world.html">Hello World!</a>
-        </h2>
-      </li>
-    
-  </ul>
-
-  <p class="rss-subscribe">subscribe <a href="/feed.xml">via RSS</a></p>
+  </article>
 
 </div>
 

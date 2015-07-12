@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Bartj3</title>
+    <description>...
+</description>
+    <link>http://www.bartvanzon.com/</link>
+    <atom:link href="http://www.bartvanzon.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sun, 12 Jul 2015 15:47:27 +0200</pubDate>
+    <lastBuildDate>Sun, 12 Jul 2015 15:47:27 +0200</lastBuildDate>
+    <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Rails tree structure</title>
+        <description>&lt;p&gt;A couple of days ago I had to make a documents/folder structure for an app. The
+idea was that there’s two types of objects: &lt;strong&gt;categories&lt;/strong&gt; and &lt;strong&gt;documents&lt;/strong&gt;,
+the user can click through categories and download documents. A category can
+contain other categories and documents. We only had to show the category the
+user is currently in, the files and categories that are in that category and
+some way to navigate one level higher. So there was no need to see children’s
+children etc.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;A quick search on the &lt;a href=&quot;https://www.ruby-toolbox.com&quot;&gt;Ruby Toolbox&lt;/a&gt; shows
+&lt;a href=&quot;https://github.com/stefankroes/ancestry&quot;&gt;Ancestry&lt;/a&gt; and a bunch of other options
+but most of them are way to complicated for the simple goal I was trying to
+achieve so I’ve decided to build it from scratch.&lt;/p&gt;
+
+&lt;p&gt;I started out with two models, the Category model, and the Document model.&lt;/p&gt;
+
+&lt;p&gt;``` ruby app/models/category.rb
+class Category &amp;lt; ActiveRecord::Base
+  belongs_to :parent, class_name: ‘Category’, foreign_key: “parent_id”
+  validates :title, presence: true
+  has_many :documents&lt;/p&gt;
+
+&lt;p&gt;def children
+    self.class.where(parent_id: id)
+  end&lt;/p&gt;
+
+&lt;p&gt;def parent_title
+    parent.title if parent.present?
+  end
+end
+```&lt;/p&gt;
+
+&lt;p&gt;The category can belong to other categories, and that optional parent is stored
+in the &lt;code&gt;parent_id&lt;/code&gt; variable. A category has a title as we need something to show
+when listing the categories and a category can have several documents in it.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby app/models/document.rb
+class Document &amp;lt; ActiveRecord::Base
+  validates :title, presence: true
+  belongs_to :category
+end
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Documents have a title to display them (and in a real world application probably
+a file to go with it) and it may belong to a category. If it has no category it
+should be displayed on the top level of the tree.&lt;/p&gt;
+
+&lt;p&gt;``` ruby db/schema.rb
+create_table “categories”, force: true do |t|
+  t.string   “title”
+  t.integer  “parent_id”
+end&lt;/p&gt;
+
+&lt;p&gt;create_table “documents”, force: true do |t|
+  t.string   “title”
+  t.integer  “category_id”
+end
+```
+The database schema should look something like this.&lt;/p&gt;
+
+&lt;p&gt;One of the problems with these models is that a category can reference to ANY
+category as it’s parent. So even itself, to prevent that we’ll need a custom
+validator, it can be added to the category model with the following line:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ruby app/models/category.rb
+validates_with CategoryParentValidator
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;And the validator itself would look something like this:
+&lt;code&gt;ruby app/validators/category_parent_validator.rb
+Class CategoryParentValidator &amp;lt; ActiveModel::Validator
+  def validate(record)
+    if !record.new_record? &amp;amp;&amp;amp; record.parent_id == record.id
+      record.errors[:parent] &amp;lt;&amp;lt; I18n.t(&#39;cant_be_itself&#39;, scope: &#39;errors.messages&#39;)
+    end
+  end
+end
+&lt;/code&gt;
+If the record is new we shouldn’t check if the parent_id is the same as the
+current id because the current id will be nil. So a new record without a parent
+would have both id’s on nil but is still valid.&lt;/p&gt;
+
+&lt;p&gt;The next step in building the tree structure is the controller:
+``` ruby app/controllers/documents_controller.rb
+class DocumentsController &amp;lt; ApplicationController
+  before_action :set_document, only: [:show]
+  before_action :set_files_variables, only: [:index, :show]&lt;/p&gt;
+
+&lt;p&gt;def index
+  end&lt;/p&gt;
+
+&lt;p&gt;def show
+  end&lt;/p&gt;
+
+&lt;p&gt;private
+  def set_document
+    @document = Document.find params[:id]
+  end&lt;/p&gt;
+
+&lt;p&gt;def set_files_variables
+    @selected_category = params[:selected_category]
+    @parent_category = get_parent_category_id(@selected_category)
+    @categories = Category.where(parent_id: @selected_category)
+    @documents = Document.where(category_id: @selected_category)
+  end&lt;/p&gt;
+
+&lt;p&gt;def get_parent_category_id(category_id)
+    begin
+      selected_category = Category.find(category_id)
+      return selected_category.parent.id if selected_category.parent.present?
+    rescue ActiveRecord::RecordNotFound
+    end&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;nil #the category was not found or there was no parent   end end ``` There&#39;s a bunch of variables we&#39;re going to need in the view, the selected category is needed so we can show the title of the category we&#39;re currently in. The parent_category is needed to navigate to one level higher, the categories are the categories in the selected category and the documents are the documents in the selected category.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;``` erb app/views/documents/_document_list.html.erb&lt;/p&gt;
+&lt;h3&gt;Document List&lt;/h3&gt;
+&lt;ul id=&quot;document_list&quot;&gt;
+  &amp;lt;% if @selected_category.present? %&amp;gt;
+    &lt;li class=&quot;parent&quot;&gt;
+    &amp;lt;%= link_to &#39;..&#39;, documents_path(selected_category: @parent_category) %&amp;gt;
+    &lt;/li&gt;
+  &amp;lt;% end %&amp;gt;
+&amp;lt;% @categories.each do |category| %&amp;gt;
+  &lt;li class=&quot;category&quot;&gt;
+    &amp;lt;%= link_to &quot;#{category.title}&quot;, documents_path(selected_category: category.id) %&amp;gt;
+  &lt;/li&gt;
+&amp;lt;% end %&amp;gt;
+
+&amp;lt;% @documents.each do |document| %&amp;gt;
+  &lt;li class=&quot;document &amp;lt;%= document_icon_class(document) %&amp;gt;&quot;&gt;
+    &amp;lt;%= link_to &quot;#{document.title}&quot;, document_path(document, selected_category: @selected_category) %&amp;gt;
+  &lt;/li&gt;
+&amp;lt;% end %&amp;gt;
+&lt;/ul&gt;
+&lt;p&gt;```
+I expected the view to be pretty complex but it turned out to be easier then I
+expected. We show the selected category, a way of navigating and a list of
+categories and files in the category. Because there’s no need to see children’s
+children this stays pretty simple.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 21 Nov 2013 15:56:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/rails/2013/11/21/rails-tree-structure.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/rails/2013/11/21/rails-tree-structure.html</guid>
+        
+        
+        <category>rails</category>
+        
+      </item>
+    
+      <item>
+        <title>Blogging with Vim</title>
+        <description>&lt;p&gt;Writings blog posts with Vim is awesome! Obviously, if I thought otherwise I
+wouldn’t currently be writing this in Vim. Writing posts on my local machine
+works perfectly for me as interruptions aren’t as big of a problem as they
+would be when I’d be writing in some textarea online. I can just close the file,
+pick up whatever is interrupting me and continue whenever I want. Another nice
+thing is that I often write posts while traveling by public transport and
+writing the posts on my local machine means I don’t have to rely on the internet
+the public transport offers (which actually isn’t too bad in the Netherlands).
+Another thing that blogging in Vim makes possible is that you can just open a
+single terminal screen, set it to fullscreen and write without any distractions.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;Blogging in Vim wouldn’t be half as cool if you wouldn’t be able to deploy your
+markdown files straight to your blog from the commandline. Blogging from your
+terminal, everyone wants that right? Or is it just for weird developers? Ah
+well… &lt;a href=&quot;https://github.com/imathis/octopress&quot;&gt;Octopress&lt;/a&gt; makes this possible!
+You can write your post in markdown, run a rake command and tadaaa: it’s
+deployed and online for everyone to read! To get started with Octopress it will
+take some minor configuration, or if you’re anything like me a lot of
+configuration but once setup it’s a great way to blog.
+&lt;a href=&quot;http://octopress.org&quot;&gt;The Octopress site&lt;/a&gt; has plenty of guides explaining
+where to get started and where to start tweaking if you want a custom solution.&lt;/p&gt;
+
+&lt;p&gt;There’s a couple of downsides of writing in Vim which are fixable by setting
+your configuration properly. By default there’s no line breaking in Vim so if
+you would just start typing away all of your text will end up becoming one long
+giant line of text. This is fixable by typing &lt;code&gt;:set textwidth=80&lt;/code&gt;, keeping your
+lines under 80 lines is a great convention while coding. But it works great for
+keeping your texts readable as well. This is a setting I do not have in my
+.vimrc because I only want this set while writing blog posts, automatic
+line breaks are probably a bad idea while coding. I do have the setting
+&lt;code&gt;:set colorcolumn=80&lt;/code&gt; in my .vimrc which shows where the 80th character is in
+every line so I can (attempt) to stay under the 80 char limit manually while
+coding.&lt;/p&gt;
+
+&lt;p&gt;If you already started on your post without setting text width or if you
+copy-pasted something and ruined your formatting you can select the text using
+visualmode and type &lt;code&gt;gq&lt;/code&gt; to reformat all of the selected text. Obviously it
+would be even better if you use &lt;code&gt;gg{motion}&lt;/code&gt; to achieve the same with less
+keystrokes but personally I often use visualmode for this action.&lt;/p&gt;
+
+&lt;p&gt;For me one of the biggest loss when using Vim is the lack of spell checking,
+because English isn’t my native tongue I &lt;s&gt;definately&lt;/s&gt; definitely need it
+(and to be honest I a need it when writing Dutch texts as well). Of course
+spell checking is something you can turn on, and with plenty of supported
+languages. To turn spell checking on and highlight the incorrectly spelled words
+use the command &lt;code&gt;:setlocal spell spelllang=en_us&lt;/code&gt;. You can then navigate
+forwards (&lt;code&gt;]s&lt;/code&gt;) and backwards (&lt;code&gt;[s&lt;/code&gt;) through these incorrectly spelled words and
+by using the &lt;code&gt;z=&lt;/code&gt; command you’ll open up the list with correct spelling
+suggestions. When writing tech articles there’ll probably be a bunch of words
+that are not in the list and thus incorrectly marked as incorrect. You can add
+these words to the wordlist by using the &lt;code&gt;zg&lt;/code&gt; command. There’s an enormous
+amount of alternative commands when fixing your typo’s and spelling errors,
+be sure to check out the relative help files at &lt;code&gt;:h spell&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Most of these settings have shortcuts which make them easier to type out, Vim
+help will tell you about them. For example &lt;code&gt;:help textwidth&lt;/code&gt; (or even &lt;code&gt;:h
+textwidth&lt;/code&gt;, we are lazy devs!) will tell you that setting &lt;code&gt;:set tw&lt;/code&gt; will do
+exactly the same! And while you’re in the help files anyways &lt;code&gt;:h set&lt;/code&gt; will tell
+you that you should use &lt;code&gt;:se tw=80&lt;/code&gt; next time you’re setting your text width!&lt;/p&gt;
+</description>
+        <pubDate>Sat, 16 Nov 2013 08:13:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/vim/2013/11/16/blogging-with-vim.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/vim/2013/11/16/blogging-with-vim.html</guid>
+        
+        
+        <category>vim</category>
+        
+      </item>
+    
+      <item>
+        <title>Configure your Vim for easy searching</title>
+        <description>&lt;p&gt;When navigating through Vim you’ll search a lot using the &lt;code&gt;/&lt;/code&gt; command, which
+works ‘ok’ by default but there’s a couple of settings you can make to increase
+Vims search functionality a lot.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;These are the settings I have in my &lt;code&gt;.vimrc&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set incsearch
+&lt;/code&gt;
+Normally Vim will wait with searching until you’ve completed your search pattern
+and once you press enter it will search for a match. Once you’ve set &lt;code&gt;incearch&lt;/code&gt;
+it will immediately start searching as you type. So you’ll see where the first
+match of your search pattern is, pretty handy as you’ll immediately see whether
+your pattern is correct or not.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set hlsearch
+&lt;/code&gt;
+This will highlight all of the matches of your search pattern, making it easy to
+show where and how often your pattern matches.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+autocmd InsertEnter * :setlocal nohlsearch
+autocmd InsertLeave * :setlocal hlsearch
+&lt;/code&gt;
+This will disable the highlights when you enter insertmode and will turn them
+back on when you leave insertmode. So if you’ve searched and want to change
+something it’ll stop highlighting the results but once you’re done editing
+you’ll be able to continue your search.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+map &amp;lt;Leader&amp;gt;cs :nohlsearch&amp;lt;cr&amp;gt;
+&lt;/code&gt;
+Highlighting your results is great, but you’ll want to turn the highlights off
+once you’re done with them. Typing &lt;code&gt;:nohlsearch&lt;/code&gt; will do the trick, but as this
+is something I do quite often I’ve created a shortcut for it: &lt;code&gt;&amp;lt;Leader&amp;gt;cs&lt;/code&gt;
+clears all the search results (&lt;strong&gt;C&lt;/strong&gt;lear &lt;strong&gt;S&lt;/strong&gt;earch).&lt;/p&gt;
+
+&lt;p&gt;There’s plenty more stuff to tweak about searching through Vim, these are the
+ones I’ve set but if you want to learn more tricks be sure to check out Vim’s
+awesome help guides. They’ve got an entire chapter about searching, check it out
+at: &lt;code&gt;:h usr_27&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Am I searching through my files the hard way or am I missing an awesome setting?
+Please let me know in the comments, via mail or on Twitter!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 12 Nov 2013 18:26:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/vim/2013/11/12/configure-your-vim-for-easy-searching.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/vim/2013/11/12/configure-your-vim-for-easy-searching.html</guid>
+        
+        
+        <category>vim</category>
+        
+      </item>
+    
+      <item>
+        <title>Keeping your workspace in sync using Dropbox</title>
+        <description>&lt;p&gt;I spend most of my time working on two systems, a desktop at work and a laptop
+at home. As I spend a lot of that time in the terminal I’ve setup some things to
+make sure my shell works exactly the same on both systems.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;To achieve this I use &lt;a href=&quot;https://db.tt/gpBR2QOx&quot;&gt;Dropbox&lt;/a&gt; to sync all of my
+dotfiles, if you haven’t used Dropbox before you should definately give it a go.
+It’s a tool that keeps a folder in sync between your separate computer systems
+(and phone) with the nice bonus of automaticly saving previous versions of all
+of those files so if you accidentaly remove or overwrite one you can get it back
+easily.&lt;/p&gt;
+
+&lt;p&gt;In my Dropbox folder I’ve got a folder called &lt;code&gt;global files/dotfiles&lt;/code&gt; which
+contains a lot of my dotfiles. The files and folders I keep in there are:
+&lt;code&gt;.gemrc .gitconfig, .gitignore_global, .oh-my-zsh, .railsrc, .tmux.conf, .vim,
+.vimrc, .zsh_history, .zshenv&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Obviously you should judge for yourself what files you will put in there but
+these files are the ones that make sense for me to keep in sync.&lt;/p&gt;
+
+&lt;p&gt;To keep the files in sync you’ll have to copy the originals files to your
+dropbox folder and create a symlink to the Dropbox location in the old folder.
+For example:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+cd ~
+mv .gemrc Dropbox/global\ files/dotfiles/.gemrc
+ln -s Dropbox/global\ files/dotfiles/.gemrc .gemrc
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;After this your editor and shell should work exactly the same on all of your
+systems.&lt;/p&gt;
+</description>
+        <pubDate>Thu, 07 Nov 2013 08:52:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/dotfiles/2013/11/07/keeping-your-workspace-in-sync-using-dropbox.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/dotfiles/2013/11/07/keeping-your-workspace-in-sync-using-dropbox.html</guid>
+        
+        
+        <category>dotfiles</category>
+        
+      </item>
+    
+      <item>
+        <title>Starting on your vimconfig</title>
+        <description>&lt;p&gt;Once you’ve installed Vim(didn’t install it yet?
+&lt;a href=&quot;/blog/2013/11/03/getting-started-with-vim/&quot;&gt;check out this blogpost&lt;/a&gt;) it’s time
+to setup your configuration file, where the Vim magic happens. Vim
+configurations are different for each developer, you start out with a blank
+configuration file, or maybe with a copy of a vimrc of a developer you know and
+over the years as you grow as a developer your vimrc will grow with you.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;Your vimrc is something to be proud of, it shows what awesome work flow
+improvements you’ve made and it shows how you know how to mold your tools
+completely to work for you. A lot of developers share their dot files on GitHub
+and if the developer’s a Vim user it’s very likely you can find his vimrc there
+as well. Vims configuration file can be found in &lt;code&gt;~/.vimrc&lt;/code&gt;, and obviously the
+best way to edit it is in Vim. But as you might need some time to get used to
+editing text and navigating through it in Vim you could of course open it in
+your (previous) favorite text editor as well.&lt;/p&gt;
+
+&lt;p&gt;I’ll show you some of the lines you can put in your vimrc that I have in there,
+and of which I believe you really can’t do without. If you would like to know
+more about a setting then I explained about it, remember that you can use Vim
+help for all of this stuff (for example &lt;code&gt;:h nocompatible&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set nocompatible
+&lt;/code&gt;
+This will tell Vim to actually behave like Vim, and not try to be compatible
+with Vi. An old editor which was created way before I was even born, so I can’t
+really be bothered about compatibility with it. I should probably look up what
+the exact differences are but I was told this should be in there, so now I’m
+telling you.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+syntax enable
+&lt;/code&gt;
+Tell Vim to use color syntax highlighting, this will make coding a lot more
+pleasant.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+nnoremap &amp;lt;Left&amp;gt; :echoe &quot;Use h&quot;&amp;lt;CR&amp;gt;
+nnoremap &amp;lt;Right&amp;gt; :echoe &quot;Use l&quot;&amp;lt;CR&amp;gt;
+nnoremap &amp;lt;Up&amp;gt; :echoe &quot;Use k&quot;&amp;lt;CR&amp;gt;
+nnoremap &amp;lt;Down&amp;gt; :echoe &quot;Use j&quot;&amp;lt;CR&amp;gt;
+&lt;/code&gt;
+I actually don’t have these in my vimrc anymore but used to have this for quite
+a while. In Vim you really (really!) shouldn’t use the arrow keys for
+navigation, I had a hard time doing so, so I used this set of configurations to
+disable the key and tell me what key to use.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set autoindent
+set smartindent
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set copyindent
+set listchars=tab:··,trail:·
+set list
+&lt;/code&gt;
+Auto indentation makes your life easier, these settings won’t only take care of
+your indentation, they will also make sure you’re using spaces instead of tabs
+for indentation. And last but not least they’ll show you if the person before
+you messed his tabs/spaces up by showing tabs in your code and showing trailing
+spaces. The whole tabs vs spaces ends up being your personal preference so you
+might want to tweak this to match your own preference.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set cursorline
+&lt;/code&gt;
+It highlights the entire line your cursor is on, not quite a must have, but I
+think it just makes coding a bit more pleasant.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set colorcolumn=80
+&lt;/code&gt;
+You should really try to keep your lines shorter then 80 characters, it makes
+your code way easier to read and has the nice advantage that you can actually
+split screen your code on a laptop as well. This setting will draw a line at the
+80 character limit, it’s not prohibiting you from creating longer lines, but
+just subtly reminding you.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+let mapleader=&quot;,&quot;
+&lt;/code&gt;
+A lot of the shortcuts in Vim use the leader key to trigger them, (and the longer
+you’re developing the more you’ll create) the default leader key however is &lt;code&gt;\&lt;/code&gt;
+which is pretty annoying, the comma is easy to reach so mapping the leader key to
+your comma will make a lot of your shortcuts easier.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set backspace=2
+&lt;/code&gt;
+By default Vim can have some pretty weird behaviors, this corrects one of them.
+For example: Vim won’t remove newlines with backspace by default. Annoying!&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set history=1000
+&lt;/code&gt;
+When using Vim in normal mode (where you enter the commands) you can navigate
+through your previous commands using the arrow keys, by default it stores the
+last 20 commands you gave Vim which normally should be more then enough. But it
+never hurts to be safe, in case you forgot that awesome command you used a while
+ago.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set relativenumber
+&lt;/code&gt;
+This is an incredible setting which took me way to long to find, navigating to
+Vim can be a guess sometimes, you want to delete the piece of code in the next
+couple of lines but how many lines is it exactly? You’re at line 15, the other
+code is at line 29, so thats 14 lines… These simple calculations will take a
+slight amount of your time which would have been better spend coding. Relative
+numbers will show you relative line numbers. Which means that in the gutter
+where normally the line numbers start with 1 at the top of the file and go down
+the gutter will show the current line as 0, the line above and below it as 1,
+and above and below that as 2 etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+set encoding=utf-8
+&lt;/code&gt;
+This one should be pretty obvious: it sets the character encoding used inside
+Vim, it’s not default though so make sure you set it.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;vim
+nmap k gk
+nmap j gj
+&lt;/code&gt;
+When using &lt;code&gt;k&lt;/code&gt; and &lt;code&gt;j&lt;/code&gt; to navigate up and down your code you expect to go to the
+next line on your screen, thats not default though. Vim will send you to the
+next line in the file, which if Vim wrapped the line because your screen’s too
+small might not be exactly what you meant. This completely annoyed me so I
+remapped &lt;code&gt;k&lt;/code&gt; and &lt;code&gt;j&lt;/code&gt; to &lt;code&gt;gk&lt;/code&gt; and &lt;code&gt;gj&lt;/code&gt; which will make them behave like I want
+them to.&lt;/p&gt;
+
+&lt;p&gt;These configurations are just the tip of the iceberg, there are way more options
+to configure, but these should get you started. Make sure to browse through
+other people’s configurations as often as possible to learn new tricks and keep
+tweaking your configuration to make your Vim the best there is.&lt;/p&gt;
+
+&lt;p&gt;I’ll be writing more posts about Vim (&lt;a href=&quot;/blog/categories/vim/&quot;&gt;read more&lt;/a&gt;), so
+make sure to read those too, expect articles about plugins, workflows and more!&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 04 Nov 2013 19:47:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/vim/2013/11/04/starting-on-your-vimconfig.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/vim/2013/11/04/starting-on-your-vimconfig.html</guid>
+        
+        
+        <category>vim</category>
+        
+      </item>
+    
+      <item>
+        <title>Getting started with Vim</title>
+        <description>&lt;p&gt;I’ve started using Vim about a year ago, so I’m definitely not an experienced
+user. But along the way I’ve learned some neat tricks which I would like to
+share with you.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;First there’s installing Vim itself, sure if you’re a Mac user Vim comes
+preinstalled. But if you want it to play nice with some of the available plugins
+you’ll need a Vim that’s been compiled with Ruby support. On a Mac there’s a
+couple ways to do it:&lt;br /&gt;
+&lt;strong&gt;The awesome way&lt;/strong&gt;: Google like crazy, find the correct
+files, setup the configuration properly and compile it yourself. I’ve tried this
+a while ago and got this working in a couple of hours, sadly I broke it several
+weeks later and never got it working again.&lt;br /&gt;
+Luckily there’s another way, &lt;strong&gt;The lazy way&lt;/strong&gt;: &lt;code&gt;brew install macvim&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Once you’ve got Vim running it’s time for the hard part, actually using it. When
+you’re coming from an editor like Textmate or Sublime or maybe even a complete
+IDE Vim will take some getting used to. Luckily Vim has an insanely good
+help file. When you start Vim just access it by typing &lt;code&gt;:h&lt;/code&gt;. EVERYTHING is
+different in Vim, and made for developer happiness, even something as simply
+navigation through a file. Sure you can use the arrow keys to move around, but
+there’s ways way more effective than that, and the help file will slowly guide
+you through those ways. Just start reading the help file and instead of an
+enormous list of options it’ll tell you step by step how to get started. After
+you’ve got the basic hang of (very simple) navigation it’ll suggest you to use
+vimtutor and I completely agree. Vimtutor is an awesome tool to learn the Vim
+basics.&lt;/p&gt;
+
+&lt;p&gt;Once you’ve installed Vim and worked your way through Vimtutor it’s time to
+configure Vim to your own taste, I’ll explain where to get started in a blogpost
+tomorrow.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 03 Nov 2013 10:20:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/vim/2013/11/03/getting-started-with-vim.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/vim/2013/11/03/getting-started-with-vim.html</guid>
+        
+        
+        <category>vim</category>
+        
+      </item>
+    
+      <item>
+        <title>Switching Postgresql on a Mac</title>
+        <description>&lt;p&gt;Earlier today I decided to switch from &lt;a href=&quot;http://postgresapp.com&quot;&gt;Postgres.app&lt;/a&gt; to
+a simple homebrew install of postgresql. Not because I’m not satisfied with the
+app but I think it’s just a bit overkill to start up a database. Together with
+the &lt;a href=&quot;https://github.com/mperham/lunchy&quot;&gt;lunchy gem&lt;/a&gt; (a launchctl wrapper)
+I found yesterday switching should be a piece of cake. So I threw Postgres.app
+in the trashbin. Entered &lt;code&gt;brew install postgresql&lt;/code&gt; and everything was supposed
+to be unicorns and rainbows.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;However I kept getting this error when trying to interact with the database via
+Rails:
+&lt;code&gt;
+could not connect to server: No such file or directory
+Is the server running locally and accepting
+connections on Unix domain socket &quot;/var/pgsql_socket/.s.PGSQL.5432&quot;?
+&lt;/code&gt;
+I had absolutely no clue where to look but after a while of messing around I
+figured it out, the &lt;code&gt;pg&lt;/code&gt; gem I use with Rails was installed with the old
+Postgresql installed. And now I switched databases it couldn’t connect anymore.
+The solution is simple, &lt;strong&gt;just uninstall the pg gem and reinstall it&lt;/strong&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 02 Nov 2013 09:03:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/2013/11/02/switching-postgresql-on-a-mac.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/2013/11/02/switching-postgresql-on-a-mac.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>The world of Objective-C through Ruby eyes</title>
+        <description>&lt;p&gt;My contract says &lt;em&gt;Developer&lt;/em&gt; which might sound a bit allround but up until
+recently 95% of the development I did was Ruby on Rails. With a rare sidestep
+to Actionscript, Objective-C, Coffeescript, plain Ruby and more. I’ve always
+wanted to do some more Objective-C and in my spare time I’ve made one or two
+apps in the past (actually one finished and about 10 started but never finished
+;)) But I believe the only way to learn something properly is by doing it 40
+hours a week. So a couple of weeks ago I’ve finally had the luck that we
+(Wirelab) got an Objective-C job and it was quiet enough for me to focus on
+picking up Objective-C and building the app.&lt;/p&gt;
+
+&lt;p&gt;As I’m a Ruby developer and more specifically a Rails developer I’m quite a lazy
+developer. When I run into a problem more often then not there’s a gem to solve
+it for me or there’s a blog that explains step by step how to solve it. Rarely
+I spend days or even hours on a single problem anymore.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;So it was quite a shock for me to find the state the Objective-C “community” is
+in. I say “community” because I’ve probably looked for it in the wrong places,
+but the blogposts, tutorials and stack overflow answers (and questions) seem to
+be of a poor quality compared with Ruby. The pride that ruby developers have in
+their work doesn’t seem to be present in the Objective-C scene: if it works its
+good.&lt;/p&gt;
+
+&lt;p&gt;I don’t want my code to work, I want my code to &lt;strong&gt;shine&lt;/strong&gt;. I’ve been lucky to
+have a friend who’s an experienced Objective-C developer that has been pushing
+me in the right direction last couple of weeks because I haven’t found the
+shining ambition a lot online. Like I’ve said before maybe I’ve just been
+looking in the wrong places so please do correct me if I’m wrong. One awesome
+thing the Objective-C community does have is &lt;a href=&quot;http://cocoapods.org/&quot;&gt;Cocoapods&lt;/a&gt;.
+On there I’ve found great pods (Objective-C’s gems) like
+&lt;a href=&quot;https://github.com/AFNetworking/AFNetworking&quot;&gt;AFNetworking&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/samvermette/SVProgressHUD&quot;&gt;SVProgressHUD&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/gotosleep/JASidePanels&quot;&gt;JASidePanels&lt;/a&gt; and many more. It’s
+not only an easy way to find these gems to make your life easier, it’s also a
+place to display your own shining code. (There is one thing wrong with these pods
+though… They’re named after the thing they actually do! Aweful, I’ve always
+loved the smart gem names like Nokogiri, Capybara and Koala.&lt;/p&gt;
+
+&lt;p&gt;I want to share my way of being a lazy developer with the Objective-C developers
+so I’ve decided to build some gems, or actually I should say pods. As a fresh
+developer I will probably mess some things up badly, but I might also fix some
+stuff thats weird for me but the experienced developers take for granted.&lt;/p&gt;
+
+&lt;p&gt;Last week I’ve worked on &lt;code&gt;NSDate+RelativeTime&lt;/code&gt;, a pod you can find on
+&lt;a href=&quot;http://cocoapods.org/?q=nsdate%20relative%20time%20bart&quot;&gt;Cocoapods&lt;/a&gt; or on
+&lt;a href=&quot;https://github.com/bartj3/NSDate-RelativeTime&quot;&gt;GitHub&lt;/a&gt;. It got some positive
+feedback since I’ve posted it so I’ll assume people are using it. Sadly there’s
+no actual stats on pod usage like there is with Rubygems. And I’ve got another
+pod in the works.&lt;/p&gt;
+
+&lt;p&gt;I’m pretty satisfied with the result as it solves a problem I ran into a couple
+of weeks ago and there didn’t seem to be anything like this yet so I hope it
+helps some other developers be lazy like me.&lt;/p&gt;
+
+&lt;p&gt;A thing in the pod that definitely doesn’t shine yet is it’s tests. Testing
+with Objective-C, and especially continuous integration seems to be way harder
+then it is with Ruby. And most of the resources I found were outdated. It
+frustrates me I need to generate an entire project while there’s only one file
+with actual tests. And besides that only IOS is tested while it should work fine
+on OSX as well, but I don’t have the tests to prove it. If there’s anyone out
+there who would like to pair with me to get some more robust tests running and
+getting some kind of CI setup that’d be awesome.&lt;/p&gt;
+
+&lt;h3 id=&quot;im-a-lazy-developer-and-working-on-making-objective-c-developers-just-as-lazy-as-me&quot;&gt;I’m a lazy developer and working on making Objective-C developers just as lazy as me!&lt;/h3&gt;
+</description>
+        <pubDate>Wed, 30 Oct 2013 20:45:00 +0100</pubDate>
+        <link>http://www.bartvanzon.com/ruby/objective-c/2013/10/30/the-world-of-objective-c-through-ruby-eyes.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/ruby/objective-c/2013/10/30/the-world-of-objective-c-through-ruby-eyes.html</guid>
+        
+        
+        <category>ruby</category>
+        
+        <category>objective-c</category>
+        
+      </item>
+    
+      <item>
+        <title>Setting up your shell: oh-my-zsh</title>
+        <description>&lt;p&gt;Up until not too long ago I barely used the terminal, I used it when absolutely
+necessary but whenever it was possible I immediately switch to a GUI for
+whatever I was doing. After reading yet another “Why Vim is awesome” blog I
+decided to make the switch from Textmate to Vim. And once I was editing in Vim
+I noticed that I was more productive by just fullscreening my terminal and
+staying in the terminal as much as possible. Without continuously switching
+between my mouse and keyboard I got faster and faster at the stuff I do most
+of my day: coding and everything related to it. Since then I’ve been trying to
+optimize my work flow as much as possible.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;The first step to having a pleasant terminal environment is getting the proper
+shell. I’ve picked &lt;a href=&quot;https://github.com/robbyrussell/oh-my-zsh&quot;&gt;oh-my-zsh&lt;/a&gt;. Not
+because I think zsh is way better then bash or the few other alternatives,
+because I honestly wouldn’t know whether it’s actually better. But because
+oh-my-zsh is crazy simple to install and configure, and instantly gives you
+awesome benefits. One of the biggest is the auto completion, especially when
+just getting started in terminal it’s great when you vaguely remember a command
+that you can just press tab and it’ll suggest a bunch of commands for you to
+use. Another great one is the theming options that come with oh-my-zsh. The
+starting theme is awesome on itself, but whenever you have some spare time you
+should really try customizing a theme to your own desire.&lt;/p&gt;
+
+&lt;p&gt;Installing
+Obviously they’ve got installing instructions
+&lt;a href=&quot;https://github.com/robbyrussell/oh-my-zsh&quot;&gt;on their github page&lt;/a&gt;, however if
+you’re a mac user installing oh-my-zsh is just a simple oneliner:
+&lt;code&gt;
+curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Have fun!&lt;/p&gt;
+</description>
+        <pubDate>Wed, 16 Oct 2013 21:47:00 +0200</pubDate>
+        <link>http://www.bartvanzon.com/shell/zsh/2013/10/16/setting-up-your-shell-oh-my-zsh.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/shell/zsh/2013/10/16/setting-up-your-shell-oh-my-zsh.html</guid>
+        
+        
+        <category>shell</category>
+        
+        <category>zsh</category>
+        
+      </item>
+    
+      <item>
+        <title>Yet another shot</title>
+        <description>&lt;p&gt;Over the years I tried blogging a couple of times. However for some reason I
+never seemed able to get some rhythm in it, to keep blogging. The last article
+on this blog is well over a year old. And the day I wrote it I was sure it was
+the first of many more to come. The post got some traction on
+&lt;a href=&quot;https://news.ycombinator.com&quot;&gt;Hacker News&lt;/a&gt; and I got some great feedback.
+However the article was a rant, and rants always seem to get traction, and are
+the easiest to write.&lt;/p&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;Last couple of months I’ve had the honor to be invited to speak at a couple of
+usergroups and conferences, and I got some great feedback. People were
+enthoustiastic about what I had to tell them, a surprise to me because I thought
+my skills to be pretty mediocre. Turns out that I might be comparing myself with
+the wrong people. There’ll always be some guy better at Vim, or some guy better
+at Ruby, and sadly for me plenty of guys better at skateboarding and
+snowboarding… but (this sounds obvious but wasn’t to me) as it turns out
+there’s a lot of people that have different focusses when learning new things.
+People I can definately teach some new tricks.&lt;/p&gt;
+
+&lt;p&gt;Inspired by &lt;a href=&quot;http://blog.jenniferdewalt.com/post/62998082815/after-180-websites-im-ready-to-start-the-rest-of-my&quot;&gt;Jennifer Dewalt&lt;/a&gt;
+who created 180 websites in 180 days, and &lt;a href=&quot;http://swizec.com/blog/inspired-by-the-180-websites-i-will-understand-52-academic-papers-in-52-weeks/swizec/6365&quot;&gt;Swizec Teller&lt;/a&gt;
+whose plan it is to understand 52 academic papers in 52 weeks I’ve set my own
+goal: I’m not going to do anything daily, that’ll drive me crazy but I will try
+to blog as often as possible with an absolute minimum of 2 blogs a week. They
+don’t have to be pagelong stories, they could be glorified tweets, but as a
+fulltime developer I learn something new every day and I experience something
+weird at least once an hour.&lt;/p&gt;
+
+&lt;p&gt;So expect some rants but hopefully mostly tips about vim, tmux, ruby, my
+workflow, my workspace, crazy hacks, conferences, weird experiences and more!&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Oct 2013 08:07:00 +0200</pubDate>
+        <link>http://www.bartvanzon.com/2013/10/15/yet-another-shot.html</link>
+        <guid isPermaLink="true">http://www.bartvanzon.com/2013/10/15/yet-another-shot.html</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

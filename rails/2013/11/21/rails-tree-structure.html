@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Rails tree structure</title>
+  <meta name="description" content="A couple of days ago I had to make a documents/folder structure for an app. Theidea was that there’s two types of objects: categories and documents,the user ...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://www.bartvanzon.com/rails/2013/11/21/rails-tree-structure.html">
+  <link rel="alternate" type="application/rss+xml" title="Bartj3" href="http://www.bartvanzon.com/feed.xml" />
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Bartj3</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Rails tree structure</h1>
+    <p class="post-meta">Nov 21, 2013</p>
+  </header>
+
+  <article class="post-content">
+    <p>A couple of days ago I had to make a documents/folder structure for an app. The
+idea was that there’s two types of objects: <strong>categories</strong> and <strong>documents</strong>,
+the user can click through categories and download documents. A category can
+contain other categories and documents. We only had to show the category the
+user is currently in, the files and categories that are in that category and
+some way to navigate one level higher. So there was no need to see children’s
+children etc.</p>
+
+<!-- more -->
+
+<p>A quick search on the <a href="https://www.ruby-toolbox.com">Ruby Toolbox</a> shows
+<a href="https://github.com/stefankroes/ancestry">Ancestry</a> and a bunch of other options
+but most of them are way to complicated for the simple goal I was trying to
+achieve so I’ve decided to build it from scratch.</p>
+
+<p>I started out with two models, the Category model, and the Document model.</p>
+
+<p>``` ruby app/models/category.rb
+class Category &lt; ActiveRecord::Base
+  belongs_to :parent, class_name: ‘Category’, foreign_key: “parent_id”
+  validates :title, presence: true
+  has_many :documents</p>
+
+<p>def children
+    self.class.where(parent_id: id)
+  end</p>
+
+<p>def parent_title
+    parent.title if parent.present?
+  end
+end
+```</p>
+
+<p>The category can belong to other categories, and that optional parent is stored
+in the <code>parent_id</code> variable. A category has a title as we need something to show
+when listing the categories and a category can have several documents in it.</p>
+
+<p><code>ruby app/models/document.rb
+class Document &lt; ActiveRecord::Base
+  validates :title, presence: true
+  belongs_to :category
+end
+</code></p>
+
+<p>Documents have a title to display them (and in a real world application probably
+a file to go with it) and it may belong to a category. If it has no category it
+should be displayed on the top level of the tree.</p>
+
+<p>``` ruby db/schema.rb
+create_table “categories”, force: true do |t|
+  t.string   “title”
+  t.integer  “parent_id”
+end</p>
+
+<p>create_table “documents”, force: true do |t|
+  t.string   “title”
+  t.integer  “category_id”
+end
+```
+The database schema should look something like this.</p>
+
+<p>One of the problems with these models is that a category can reference to ANY
+category as it’s parent. So even itself, to prevent that we’ll need a custom
+validator, it can be added to the category model with the following line:</p>
+
+<p><code>ruby app/models/category.rb
+validates_with CategoryParentValidator
+</code></p>
+
+<p>And the validator itself would look something like this:
+<code>ruby app/validators/category_parent_validator.rb
+Class CategoryParentValidator &lt; ActiveModel::Validator
+  def validate(record)
+    if !record.new_record? &amp;&amp; record.parent_id == record.id
+      record.errors[:parent] &lt;&lt; I18n.t('cant_be_itself', scope: 'errors.messages')
+    end
+  end
+end
+</code>
+If the record is new we shouldn’t check if the parent_id is the same as the
+current id because the current id will be nil. So a new record without a parent
+would have both id’s on nil but is still valid.</p>
+
+<p>The next step in building the tree structure is the controller:
+``` ruby app/controllers/documents_controller.rb
+class DocumentsController &lt; ApplicationController
+  before_action :set_document, only: [:show]
+  before_action :set_files_variables, only: [:index, :show]</p>
+
+<p>def index
+  end</p>
+
+<p>def show
+  end</p>
+
+<p>private
+  def set_document
+    @document = Document.find params[:id]
+  end</p>
+
+<p>def set_files_variables
+    @selected_category = params[:selected_category]
+    @parent_category = get_parent_category_id(@selected_category)
+    @categories = Category.where(parent_id: @selected_category)
+    @documents = Document.where(category_id: @selected_category)
+  end</p>
+
+<p>def get_parent_category_id(category_id)
+    begin
+      selected_category = Category.find(category_id)
+      return selected_category.parent.id if selected_category.parent.present?
+    rescue ActiveRecord::RecordNotFound
+    end</p>
+
+<pre><code>nil #the category was not found or there was no parent   end end ``` There's a bunch of variables we're going to need in the view, the selected category is needed so we can show the title of the category we're currently in. The parent_category is needed to navigate to one level higher, the categories are the categories in the selected category and the documents are the documents in the selected category.
+</code></pre>
+
+<p>``` erb app/views/documents/_document_list.html.erb</p>
+<h3>Document List</h3>
+<ul id="document_list">
+  &lt;% if @selected_category.present? %&gt;
+    <li class="parent">
+    &lt;%= link_to '..', documents_path(selected_category: @parent_category) %&gt;
+    </li>
+  &lt;% end %&gt;
+&lt;% @categories.each do |category| %&gt;
+  <li class="category">
+    &lt;%= link_to "#{category.title}", documents_path(selected_category: category.id) %&gt;
+  </li>
+&lt;% end %&gt;
+
+&lt;% @documents.each do |document| %&gt;
+  <li class="document &lt;%= document_icon_class(document) %&gt;">
+    &lt;%= link_to "#{document.title}", document_path(document, selected_category: @selected_category) %&gt;
+  </li>
+&lt;% end %&gt;
+</ul>
+<p>```
+I expected the view to be pretty complex but it turned out to be easier then I
+expected. We show the selected category, a way of navigating and a list of
+categories and files in the category. Because there’s no need to see children’s
+children this stays pretty simple.</p>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Bartj3</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col  footer-col-1">
+        <ul class="contact-list">
+          <li>Bartj3</li>
+          <li><a href="mailto:bartvanzon@gmail.com">bartvanzon@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/bartj3">
+              <span class="icon  icon--github">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/>
+                </svg>
+              </span>
+
+              <span class="username">bartj3</span>
+            </a>
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/bartj3">
+              <span class="icon  icon--twitter">
+                <svg viewBox="0 0 16 16">
+                  <path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809
+                  c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/>
+                </svg>
+              </span>
+
+              <span class="username">bartj3</span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col  footer-col-3">
+        <p class="text">...
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
