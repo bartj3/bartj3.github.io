@@ -1,15 +1,15 @@
-name: Your New Jekyll Site
-description: Blogging about stuffs
-meta_description: "Your New Jekyll Site, Blogging about stuffs"
+name: Bart van Zon
+description: Developer, magician, astronaut, compulsive liar
+meta_description: "Bart van Zon's personal blog"
 
 markdown: redcarpet
 highlighter: pygments
 logo: false
 paginate: 15
 baseurl: /
-domain_name: 'http://yourblog-domain.com'
-google_analytics: 'UA-XXXXXXXX-X'
+domain_name: 'http://www.bartvanzon.com'
+google_analytics: 'UA-31563534-1'
 
 # Details for the RSS feed generator
-url:            'blog url'
-author:         'Your Name'
+url:            'http://www.bartvanzon.com'
+author:         'Bart van Zon'
