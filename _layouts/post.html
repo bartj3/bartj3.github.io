@@ -1,6 +1,6 @@
 ---
 layout: default
-disqus: false
+comments: false
 archive: false
 post_class: post-template
 ---
@@ -32,10 +32,10 @@ post_class: post-template
                     <img src="{{site.logo}}" alt="{{ site.name }}" />
                 {% else %}
                     <span class="blog-title">{{ site.name }}</span>
-                {%endif%} 
+                {%endif%}
             </a>
         </header> -->
-        
+
         <!-- <span class="post-meta">
             <time datetime="{{ page.date | date:"%Y-%m-%d" }}">{{ page.date | date_to_string }}</time>
             {% if page.categories.size > 0 %} 
@@ -74,17 +74,17 @@ post_class: post-template
                     <p> 
                         Here goes the author description. You might want to place some links too in here
                     </p>
-                </section>                
+                </section>
             {% endif %}
 
             <!-- Share links section -->
             {% include share.html %}
-            
+
             <!-- Disqus comments -->
-            {% if page.disqus %}
+            {% if page.comments %}
                 {% include disqus.html %}
             {% endif %}
-            
+
         </footer>
 
     </article>
