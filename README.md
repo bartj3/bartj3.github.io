@@ -1,8 +1,9 @@
 # bartvanzon.com
 
-This is the source of my blog: bartvanzon.com, the theme is
-[a Casper port by Rosario](https://github.com/rosario/kasper) with some (mostly
-functional) changes by me.
+This is the source of my blog: [bartvanzon.com](http://www.bartvanzon.com).
+The theme is [Casper](https://github.com/tryghost/casper) ported to Jekyll by
+[Rosario](https://github.com/rosario/kasper) with some (mostly functional)
+changes by me.
 
 ## Copyright & License Casper theme
 
