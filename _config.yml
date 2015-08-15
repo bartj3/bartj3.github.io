@@ -8,7 +8,7 @@ highlighter: pygments
 logo: false
 paginate: 15
 baseurl: /
-domain_name: 'http://www.bartvanzon.com'
+domain_name: 'http://bartvanzon.com'
 google_analytics: 'UA-31563534-1'
 permalink: /blog/:year/:month/:day/:title/
 gems:
