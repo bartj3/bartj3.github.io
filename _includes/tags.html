@@ -6,7 +6,7 @@
     {% else %}
       {% assign tag_name = tag %}
     {% endif %}
-    {% capture tag_link %}<a href="/tag/{{ tag }}">{{ tag_name }}</a>{% endcapture %}
+    {% capture tag_link %}<a href="/blog/tag/{{ tag }}">{{ tag_name }}</a>{% endcapture %}
     {% assign tags = tags | push: tag_link %}
   {% endfor %}
   {{ tags | array_to_sentence_string | prepend: 'on ' }}
