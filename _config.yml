@@ -10,7 +10,6 @@ baseurl: /
 domain_name: 'http://www.bartvanzon.com'
 google_analytics: 'UA-31563534-1'
 permalink: '/:year/:month/:day/:title.html'
-
-# Details for the RSS feed generator
-url:            'http://www.bartvanzon.com'
-author:         'Bart van Zon'
+gems:
+  - jekyll-sitemap
+  - jekyll-feed
