@@ -3,7 +3,7 @@ layout: post
 title: "Blogging with Vim"
 date: 2013-11-16 08:13
 comments: true
-categories: [vim]
+tags: [vim]
 ---
 
 Writings blog posts with Vim is awesome! Obviously, if I thought otherwise I

@@ -3,7 +3,7 @@ layout: post
 title: "Yet another shot"
 date: 2013-10-15 08:07
 comments: true
-categories: 
+tags: 
 ---
 
 Over the years I tried blogging a couple of times. However for some reason I

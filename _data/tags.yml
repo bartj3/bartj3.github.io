@@ -1,0 +1,14 @@
+rails:
+  name: Rails
+vim:
+  name: Vim
+dotfiles:
+  name: Dotfiles
+objective-c:
+  name: Objective-C
+shell:
+  name: Shell
+ruby:
+  name: Ruby
+zsh:
+  name: Zsh

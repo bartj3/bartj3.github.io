@@ -1,0 +1,50 @@
+---
+layout: default
+cover: false
+---
+
+<header class="main-header {% if page.cover %}" style="background-image: url({{ page.cover }}) {%else%}no-cover{% endif %}">
+    <nav class="main-nav overlay clearfix">
+      <a class="back-button icon-arrow-left" href="{{ site.baseurl }}">Home</a>
+      <a class="subscribe-button icon-feed" href="{{ site.baseurl }}rss.xml">Subscribe</a>
+    </nav>
+    <div class="vertical">
+        <div class="main-header-content inner">
+
+          {% if site.data.tags[page.tag].name %}
+            {% assign tag_name = site.data.tags[page.tag].name %}
+          {% else %}
+            {% assign tag_name = page.tag %}
+          {% endif %}
+          <h1 class="page-title">{{ site.name }}</h1>
+          <h2 class="page-description">Posts on <strong>{{ tag_name }}</strong></h2>
+        </div>
+    </div>
+    <a class="scroll-down icon-arrow-left" href="#content" data-offset="-45"><span class="hidden">Scroll Down</span></a>
+</header>
+<main id="content" class="content" role="main">
+  {% if site.tags[page.tag] %}
+    {% for post in site.tags[page.tag] %}
+      <article class="post">
+        <header class="post-header">
+          <h2 class="post-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+        </header>
+        <section class="post-excerpt">
+          {{ post.excerpt }} <a class="read-more" href="{{ post.url }}">&raquo;</a>
+        </section>
+        <footer class="post-meta">
+          {% if site.author %}
+            <img class="author-thumb" src="/assets/images/profile.png" alt="Author's profile picture" nopin="nopin" />
+            {{ site.author }}
+          {% endif %}
+          {% include tags.html %}
+          <time class="post-date" datetime="{{ post.date | date:"%Y-%m-%d" }}">
+            {{ post.date | date_to_string }}
+          </time>
+        </footer>
+      </article>
+    {% endfor %}
+  {% else %}
+    <p>There are no posts for this tag.</p>
+  {% endif %}
+</main>

@@ -3,7 +3,7 @@ layout: post
 title: "Switching Postgresql on a Mac"
 date: 2013-11-02 09:03
 comments: true
-categories: 
+tags: 
 ---
 
 Earlier today I decided to switch from [Postgres.app](http://postgresapp.com) to

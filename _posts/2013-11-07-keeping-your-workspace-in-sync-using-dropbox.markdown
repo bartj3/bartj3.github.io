@@ -3,7 +3,7 @@ layout: post
 title: "Keeping your workspace in sync using Dropbox"
 date: 2013-11-07 08:52
 comments: true
-categories: [dotfiles]
+tags: [dotfiles]
 ---
 
 I spend most of my time working on two systems, a desktop at work and a laptop

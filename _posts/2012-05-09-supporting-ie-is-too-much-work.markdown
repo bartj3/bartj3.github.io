@@ -3,7 +3,7 @@ layout: post
 title: "Supporting IE is too much work"
 date: 2012-05-09 12:10
 comments: true
-categories: 
+tags: 
 ---
 This is a rant, with lots of bitching and crying, if you hate those rants, stop reading now.
 

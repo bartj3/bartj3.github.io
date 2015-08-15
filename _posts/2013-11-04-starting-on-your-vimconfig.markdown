@@ -3,7 +3,7 @@ layout: post
 title: "Starting on your vimconfig"
 date: 2013-11-04 19:47
 comments: true
-categories: [vim]
+tags: [vim]
 ---
 
 Once you've installed Vim(didn't install it yet?

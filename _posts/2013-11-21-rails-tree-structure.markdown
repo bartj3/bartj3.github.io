@@ -3,7 +3,7 @@ layout: post
 title: "Rails tree structure"
 date: 2013-11-21 15:56
 comments: true
-categories: [rails]
+tags: [rails]
 ---
 
 A couple of days ago I had to make a documents/folder structure for an app. The

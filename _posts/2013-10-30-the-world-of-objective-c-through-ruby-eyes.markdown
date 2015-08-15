@@ -3,7 +3,7 @@ layout: post
 title: "The world of Objective-C through Ruby eyes"
 date: 2013-10-30 20:45
 comments: true
-categories: [ruby, objective-c]
+tags: [ruby, objective-c]
 ---
 
 My contract says _Developer_ which might sound a bit allround but up until

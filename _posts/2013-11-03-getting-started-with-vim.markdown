@@ -3,7 +3,7 @@ layout: post
 title: "Getting started with Vim"
 date: 2013-11-03 10:20
 comments: true
-categories: [vim]
+tags: [vim]
 ---
 
 I've started using Vim about a year ago, so I'm definitely not an experienced

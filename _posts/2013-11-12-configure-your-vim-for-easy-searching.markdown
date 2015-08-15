@@ -3,7 +3,7 @@ layout: post
 title: "Configure your Vim for easy searching"
 date: 2013-11-12 18:26
 comments: true
-categories: [vim]
+tags: [vim]
 ---
 
 When navigating through Vim you'll search a lot using the `/` command, which

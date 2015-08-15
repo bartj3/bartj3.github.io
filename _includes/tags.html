@@ -1,0 +1,13 @@
+{% if post.tags.size > 0 %}
+  {% assign tags = "" | split: "" %}
+  {% for tag in post.tags %}
+    {% if site.data.tags[tag].name %}
+      {% assign tag_name = site.data.tags[tag].name %}
+    {% else %}
+      {% assign tag_name = tag %}
+    {% endif %}
+    {% capture tag_link %}<a href="/tag/{{ tag }}">{{ tag_name }}</a>{% endcapture %}
+    {% assign tags = tags | push: tag_link %}
+  {% endfor %}
+  {{ tags | array_to_sentence_string | prepend: 'on ' }}
+{% endif %}

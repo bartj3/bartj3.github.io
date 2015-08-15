@@ -3,7 +3,7 @@ layout: post
 title: "Setting up your shell: oh-my-zsh"
 date: 2013-10-16 21:47
 comments: true
-categories: [shell, zsh]
+tags: [shell, zsh]
 ---
 
 Up until not too long ago I barely used the terminal, I used it when absolutely
