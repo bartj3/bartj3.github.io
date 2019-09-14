@@ -1,16 +1,48 @@
-name: Bart van Zon
-author: Bart van Zon
-description: The rants of a software developer
-meta_description: "Bart van Zon's personal blog"
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely edit after that. If you find
+# yourself editing this file very often, consider using Jekyll's data files
+# feature for the data you need to update frequently.
+#
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'bundle exec jekyll serve'. If you change this file, please restart the server process.
 
-markdown: redcarpet
-highlighter: pygments
-logo: false
-paginate: 15
+# Site settings
+# These are used to personalize your new site. If you look in the HTML files,
+# you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
+# You can create any custom variable you would like, and they will be accessible
+# in the templates via {{ site.myvariable }}.
+title: Bart van Zon
+email: bart@bartvanzon.com
+description: >- # this means to ignore newlines until "baseurl:"
+  Bart van Zons personal blog
 baseurl: /
-domain_name: 'http://bartvanzon.com'
-google_analytics: 'UA-31563534-1'
 permalink: /blog/:year/:month/:day/:title/
-gems:
-  - jekyll-sitemap
+google_analytics: UA-31563534-1
+
+url: "http://www.bartvanzon.com" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: bartj3
+github_username:  bartj3
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
   - jekyll-feed
+
+
+host: 0.0.0.0
+port: 4000
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
