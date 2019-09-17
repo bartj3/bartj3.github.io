@@ -14,16 +14,21 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Bart van Zon
+subtitle: Software developer
 email: bart@bartvanzon.com
+phone: "+436607123711"
 description: >- # this means to ignore newlines until "baseurl:"
-  Bart van Zons personal blog
-baseurl: /
+  Bart van Zon, software developer
+baseurl: ""
 permalink: /blog/:year/:month/:day/:title/
-google_analytics: UA-31563534-1
+
+google-analytics:
+  id: UA-31563534-1
 
 url: "http://www.bartvanzon.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: bartj3
 github_username:  bartj3
+linkedin_username: bartvanzon
 
 # Build settings
 markdown: kramdown
@@ -31,18 +36,21 @@ theme: minima
 plugins:
   - jekyll-feed
 
-
 host: 0.0.0.0
 port: 4000
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+
+exclude:
+  - package.json
+  - src
+  - node_modules
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
