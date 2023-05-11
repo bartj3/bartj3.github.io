@@ -21,9 +21,6 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: ""
 permalink: /blog/:year/:month/:day/:title/
 
-google-analytics:
-  id: UA-31563534-1
-
 url: "http://www.bartvanzon.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: bartj3
 github_username:  bartj3
